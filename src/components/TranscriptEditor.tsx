@@ -157,11 +157,11 @@ export default function TranscriptEditor({
         {children}
       </div>
 
-      <div className="@container grid h-[calc(100vh-80px)] grid-cols-8 gap-2 bg-red-200">
+      <div className="@container grid h-[calc(100vh-80px)] grid-cols-8 gap-2">
         {/* Transcript Section */}
-        <div className="col-span-5 rounded-md bg-white p-4 shadow-md @md:h-[98cqh] @lg:h-[98cqh]">
+        <div className="col-span-5 rounded-lg bg-white p-4 shadow-md @md:h-[98cqh] @lg:h-[98cqh]">
           <h2 className="mb-4 text-xl font-bold">Transcript</h2>
-          <div className="overflow-y-scroll rounded-md bg-gray-50 p-4 leading-relaxed">
+          <div className="h-[92cqh] overflow-y-scroll p-4 leading-relaxed">
             {transcript.words
               .map((word, originalIndex) => {
                 if (word.type === "word") {
@@ -182,7 +182,7 @@ export default function TranscriptEditor({
           </div>
         </div>
         {/* Preview Section */}
-        <div className="col-span-3 flex flex-col rounded-md bg-white p-4 shadow-md @md:h-[98cqh] @lg:h-[98cqh]">
+        <div className="col-span-3 flex flex-col rounded-lg bg-white p-4 shadow-md @md:h-[98cqh] @lg:h-[98cqh]">
           <h2 className="mb-4 text-xl font-bold">Preview</h2>
           <div className="flex flex-grow flex-col overflow-x-hidden overflow-y-auto">
             {previewContent.map((subtitle, index) => (
