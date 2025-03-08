@@ -1,7 +1,7 @@
 'use client';
 
 import { useCallback } from 'react';
-import { FormattedTranscript } from '@types';
+import { FormattedTranscript } from '@/types';
 import WordElement from './WordElement';
 import { getWordClasses } from '@utils/styles';
 
@@ -11,18 +11,18 @@ interface TranscriptEditorProps {
 }
 
 export default function TranscriptEditor({ transcript, setTranscript }: TranscriptEditorProps) {
-  // Handle single click - add newline
+  // Handle single click - add newline after this word
   const handleWordClick = useCallback(
     (index: number) => {
-      console.log('handleWordClick', index);
       setTranscript((prev) => {
         if (!prev) return null;
 
         const newWords = [...prev.words];
         newWords[index] = {
           ...newWords[index],
-          isNewLine: !newWords[index].isNewLine,
-          isNewCard: newWords[index].isNewCard ? false : newWords[index].isNewCard,
+          newLineAfter: !newWords[index].newLineAfter,
+          // If we're adding a newline, remove any newCard that might be there
+          newCardAfter: newWords[index].newLineAfter ? newWords[index].newCardAfter : false,
         };
 
         return { ...prev, words: newWords };
@@ -31,7 +31,7 @@ export default function TranscriptEditor({ transcript, setTranscript }: Transcri
     [setTranscript],
   );
 
-  // Handle double click - add new subtitle card
+  // Handle double click - add new subtitle card after this word
   const handleWordDoubleClick = useCallback(
     (index: number) => {
       setTranscript((prev) => {
@@ -40,8 +40,9 @@ export default function TranscriptEditor({ transcript, setTranscript }: Transcri
         const newWords = [...prev.words];
         newWords[index] = {
           ...newWords[index],
-          isNewCard: !newWords[index].isNewCard,
-          isNewLine: newWords[index].isNewCard ? newWords[index].isNewLine : false,
+          newCardAfter: !newWords[index].newCardAfter,
+          // If we're adding a new card, remove any newLine that might be there
+          newLineAfter: newWords[index].newCardAfter ? newWords[index].newLineAfter : false,
         };
 
         return { ...prev, words: newWords };
@@ -61,8 +62,8 @@ export default function TranscriptEditor({ transcript, setTranscript }: Transcri
         const newWords = [...prev.words];
         newWords[index] = {
           ...newWords[index],
-          isNewLine: false,
-          isNewCard: false,
+          newLineAfter: false,
+          newCardAfter: false,
         };
 
         return { ...prev, words: newWords };
@@ -88,17 +89,22 @@ export default function TranscriptEditor({ transcript, setTranscript }: Transcri
         </div>
         <div className='rounded-md bg-gray-50 p-4 leading-relaxed'>
           {transcript.words
-            .filter((word) => word.type === 'word')
-            .map((word, index) => (
-              <WordElement
-                key={index}
-                word={word}
-                index={index}
-                onClick={() => handleWordClick(index)}
-                onDoubleClick={() => handleWordDoubleClick(index)}
-                onRightClick={(e) => handleWordRightClick(e, index)}
-              />
-            ))}
+            .map((word, originalIndex) => {
+              if (word.type === 'word') {
+                return (
+                  <WordElement
+                    key={originalIndex}
+                    word={word}
+                    index={originalIndex}
+                    onClick={() => handleWordClick(originalIndex)}
+                    onDoubleClick={() => handleWordDoubleClick(originalIndex)}
+                    onRightClick={(e) => handleWordRightClick(e, originalIndex)}
+                  />
+                );
+              }
+              return null;
+            })
+            .filter(Boolean)}
         </div>
       </div>
     </div>

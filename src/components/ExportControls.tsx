@@ -1,7 +1,7 @@
-"use client";
+'use client';
 
 import { useCallback } from 'react';
-import { FormattedTranscript, SRTSubtitle } from '@types';
+import { FormattedTranscript, SRTSubtitle } from '@/types';
 
 interface ExportControlsProps {
   transcript: FormattedTranscript;
@@ -20,7 +20,7 @@ export default function ExportControls({ transcript }: ExportControlsProps) {
 
   // Generate SRT content
   const generateSrtContent = useCallback(() => {
-    const words = transcript.words.filter(word => word.type === 'word');
+    const words = transcript.words.filter((word) => word.type === 'word');
     const subtitles: SRTSubtitle[] = [];
 
     let currentSubtitle: SRTSubtitle | null = null;
@@ -29,8 +29,8 @@ export default function ExportControls({ transcript }: ExportControlsProps) {
     for (let i = 0; i < words.length; i++) {
       const word = words[i];
 
-      // Start a new subtitle if it's the first word or marked as a new card
-      if (i === 0 || word.isNewCard) {
+      // Start a new subtitle if it's the first word or the previous word was marked with newCardAfter
+      if (i === 0 || (i > 0 && words[i - 1].newCardAfter)) {
         // Save the previous subtitle if it exists
         if (currentSubtitle) {
           currentSubtitle.text = currentText.trim();
@@ -42,13 +42,13 @@ export default function ExportControls({ transcript }: ExportControlsProps) {
           index: subtitles.length + 1,
           startTime: secondsToSrtTime(word.start),
           endTime: secondsToSrtTime(word.end),
-          text: ''
+          text: '',
         };
 
         currentText = word.text;
       } else {
-        // If it's a new line, add a line break
-        if (word.isNewLine) {
+        // If the previous word was marked with newLineAfter, add a line break
+        if (i > 0 && words[i - 1].newLineAfter) {
           currentText += '\n' + word.text;
         } else {
           // Add space or not based on punctuation
@@ -84,7 +84,7 @@ export default function ExportControls({ transcript }: ExportControlsProps) {
     return srtContent;
   }, [transcript, secondsToSrtTime]);
 
-  // Export handlers
+  // Export handlers remain the same...
   const handleExportJson = () => {
     const jsonContent = JSON.stringify(transcript, null, 2);
     const blob = new Blob([jsonContent], { type: 'application/json' });
@@ -114,17 +114,17 @@ export default function ExportControls({ transcript }: ExportControlsProps) {
   };
 
   return (
-    <div className="w-full max-w-4xl">
-      <div className="flex justify-center space-x-4">
+    <div className='w-full max-w-4xl'>
+      <div className='flex justify-center space-x-4'>
         <button
           onClick={handleExportJson}
-          className="px-6 py-3 bg-blue-500 text-white font-semibold rounded-lg shadow hover:bg-blue-600 transition-colors"
+          className='rounded-lg bg-blue-500 px-6 py-3 font-semibold text-white shadow transition-colors hover:bg-blue-600'
         >
           Export JSON
         </button>
         <button
           onClick={handleExportSrt}
-          className="px-6 py-3 bg-green-500 text-white font-semibold rounded-lg shadow hover:bg-green-600 transition-colors"
+          className='rounded-lg bg-green-500 px-6 py-3 font-semibold text-white shadow transition-colors hover:bg-green-600'
         >
           Export SRT
         </button>

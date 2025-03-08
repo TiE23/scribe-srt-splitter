@@ -1,6 +1,8 @@
-"use client";
+'use client';
 
-import { FormattedWord } from '@types';
+import { FormattedWord } from '@/types';
+import { getWordClasses } from '@utils/styles';
+import clsx from 'clsx';
 
 interface WordElementProps {
   word: FormattedWord;
@@ -11,26 +13,21 @@ interface WordElementProps {
 }
 
 export default function WordElement({
-  word, onClick, onDoubleClick, onRightClick
+  word,
+  onClick,
+  onDoubleClick,
+  onRightClick,
 }: WordElementProps) {
-  const getWordClasses = () => {
-    if (word.isNewCard) {
-      return 'inline-block px-1 py-0.5 bg-purple-200 text-purple-800 rounded mr-1 cursor-pointer';
-    } else if (word.isNewLine) {
-      return 'inline-block px-1 py-0.5 bg-green-200 text-green-800 rounded mr-1 cursor-pointer';
-    } else {
-      return 'inline-block mr-1 hover:bg-gray-200 px-1 py-0.5 rounded cursor-pointer';
-    }
-  };
-
   return (
     <span
-      className={getWordClasses()}
+      className={clsx('select-none', getWordClasses(word.newCardAfter, word.newLineAfter))}
       onClick={onClick}
       onDoubleClick={onDoubleClick}
       onContextMenu={onRightClick}
     >
       {word.text}
+      {word.newCardAfter && <span className='ml-1 text-purple-800'>⏎⏎</span>}
+      {word.newLineAfter && <span className='ml-1 text-green-800'>⏎</span>}
     </span>
   );
 }
