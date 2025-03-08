@@ -1,6 +1,11 @@
 import { FormattedTranscript, SRTSubtitle } from "@types";
 import { secondsToSrtTime } from "./time";
 
+// Detect when there is a pause before a line.
+const PAUSE_DETECTION_THRESHOLD = 0.5;
+const PAUSE_ADJUSTMENT_CHARACTER_DURATION = 0.04;
+const PAUSE_ADJUSTMENT_MINIMUM_DURATION = PAUSE_ADJUSTMENT_CHARACTER_DURATION * 5;
+
 // Generate SRT content
 export const generateSrtContent = (transcript: FormattedTranscript) => {
   const words = transcript.words.filter((word) => word.type === "word");
@@ -12,6 +17,20 @@ export const generateSrtContent = (transcript: FormattedTranscript) => {
   for (let i = 0; i < words.length; i++) {
     const word = words[i];
 
+    // Adjust start time for words with long durations (pauses before them)
+    const wordDuration = word.end - word.start;
+    const adjustedStart =
+      wordDuration > PAUSE_DETECTION_THRESHOLD
+        ? Math.max(
+            word.end -
+              Math.max(
+                word.text.length * PAUSE_ADJUSTMENT_CHARACTER_DURATION,
+                PAUSE_ADJUSTMENT_MINIMUM_DURATION,
+              ),
+            word.start,
+          )
+        : word.start;
+
     // Start a new subtitle if it's the first word or the previous word was marked with newCardAfter
     if (i === 0 || (i > 0 && words[i - 1].newCardAfter)) {
       // Save the previous subtitle if it exists
@@ -20,14 +39,13 @@ export const generateSrtContent = (transcript: FormattedTranscript) => {
         subtitles.push(currentSubtitle);
       }
 
-      // Start a new subtitle
+      // Start a new subtitle with adjusted start time
       currentSubtitle = {
         index: subtitles.length + 1,
-        startTime: secondsToSrtTime(word.start),
+        startTime: secondsToSrtTime(adjustedStart),
         endTime: secondsToSrtTime(word.end),
         text: "",
       };
-
       currentText = word.text;
     } else {
       // If the previous word was marked with newLineAfter, add a line break
