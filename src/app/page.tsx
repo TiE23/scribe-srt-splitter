@@ -1,10 +1,10 @@
 "use client";
 
-import { useState } from 'react';
-import FileUploader from '@components/FileUploader';
-import TranscriptEditor from '@components/TranscriptEditor';
-import ExportControls from '@components/ExportControls';
-import { FormattedTranscript } from '@types';
+import { useState } from "react";
+import FileUploader from "@components/FileUploader";
+import TranscriptEditor from "@components/TranscriptEditor";
+import ExportControls from "@components/ExportControls";
+import { FormattedTranscript } from "@types";
 
 export default function Home() {
   const [transcript, setTranscript] = useState<FormattedTranscript | null>(null);
@@ -15,14 +15,13 @@ export default function Home() {
 
   return (
     <main className="flex min-h-screen flex-col items-center p-4 sm:p-8">
-      <h1 className="text-3xl font-bold mb-8">Subtitle Editor</h1>
-
       {!transcript ? (
         <FileUploader onFileLoaded={handleFileLoaded} />
       ) : (
         <>
-          <TranscriptEditor transcript={transcript} setTranscript={setTranscript} />
-          <ExportControls transcript={transcript} />
+          <TranscriptEditor transcript={transcript} setTranscript={setTranscript}>
+            <ExportControls transcript={transcript} />
+          </TranscriptEditor>
         </>
       )}
     </main>

@@ -2,7 +2,7 @@ export interface ScribeWord {
   text: string;
   start: number;
   end: number;
-  type: 'word' | 'spacing';
+  type: "word" | "spacing";
   speaker_id?: string;
   speaker_name?: string;
 }

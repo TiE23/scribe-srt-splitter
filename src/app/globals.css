@@ -24,3 +24,30 @@ body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+.subtitle-card {
+  border-left: 4px solid #8b5cf6;
+  background-color: #f5f3ff;
+  padding: 0.75rem;
+  margin-bottom: 1rem;
+  border-radius: 0.375rem;
+}
+
+.subtitle-text {
+  font-size: 1rem;
+  line-height: 1.5;
+  white-space: pre-line;
+}
+
+.subtitle-index {
+  font-size: 0.75rem;
+  color: #8b5cf6;
+  margin-bottom: 0.25rem;
+  font-weight: 600;
+}
+
+.subtitle-time {
+  font-size: 0.75rem;
+  color: #6b7280;
+  margin-bottom: 0.5rem;
+}
