@@ -50,7 +50,7 @@ export default function ExportControls({ transcript, uploadedFileName }: ExportC
           onClick={handleExportJson}
           className="rounded-lg bg-blue-500 px-6 py-3 font-semibold text-white shadow transition-colors hover:bg-blue-600"
         >
-          Export JSON
+          Save JSON
         </button>
         <button
           onClick={handleExportSrt}
