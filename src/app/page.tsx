@@ -8,9 +8,11 @@ import { FormattedTranscript } from "@types";
 
 export default function Home() {
   const [transcript, setTranscript] = useState<FormattedTranscript | null>(null);
+  const [uploadedFileName, setUploadedFileName] = useState<string | null>(null);
 
-  const handleFileLoaded = (data: FormattedTranscript) => {
+  const handleFileLoaded = (data: FormattedTranscript, fileName: string | null) => {
     setTranscript(data);
+    setUploadedFileName(fileName);
   };
 
   return (
@@ -20,7 +22,7 @@ export default function Home() {
       ) : (
         <>
           <TranscriptEditor transcript={transcript} setTranscript={setTranscript}>
-            <ExportControls transcript={transcript} />
+            <ExportControls transcript={transcript} uploadedFileName={uploadedFileName} />
           </TranscriptEditor>
         </>
       )}

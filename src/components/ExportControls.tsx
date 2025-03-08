@@ -5,18 +5,22 @@ import { generateSrtContent } from "@utils/export";
 
 interface ExportControlsProps {
   transcript: FormattedTranscript;
+  uploadedFileName: string | null;
 }
 
-export default function ExportControls({ transcript }: ExportControlsProps) {
-  // Export handlers remain the same...
+export default function ExportControls({ transcript, uploadedFileName }: ExportControlsProps) {
   const handleExportJson = () => {
     const jsonContent = JSON.stringify(transcript, null, 2);
     const blob = new Blob([jsonContent], { type: "application/json" });
     const url = URL.createObjectURL(blob);
 
+    const fileName = uploadedFileName
+      ? `${uploadedFileName}.proj.json`
+      : "transcript_formatted.proj.json";
+
     const a = document.createElement("a");
     a.href = url;
-    a.download = "transcript_formatted.json";
+    a.download = fileName;
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
@@ -28,9 +32,11 @@ export default function ExportControls({ transcript }: ExportControlsProps) {
     const blob = new Blob([srtContent], { type: "text/plain" });
     const url = URL.createObjectURL(blob);
 
+    const fileName = uploadedFileName ? `${uploadedFileName}.srt` : "subtitle.srt";
+
     const a = document.createElement("a");
     a.href = url;
-    a.download = "subtitle.srt";
+    a.download = fileName;
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);

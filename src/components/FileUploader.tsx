@@ -4,7 +4,7 @@ import { useState, useCallback } from "react";
 import { FormattedTranscript } from "@types";
 
 interface FileUploaderProps {
-  onFileLoaded: (data: FormattedTranscript) => void;
+  onFileLoaded: (data: FormattedTranscript, fileName: string | null) => void;
 }
 
 export default function FileUploader({ onFileLoaded }: FileUploaderProps) {
@@ -14,6 +14,10 @@ export default function FileUploader({ onFileLoaded }: FileUploaderProps) {
   const processFile = useCallback(
     (file: File) => {
       const reader = new FileReader();
+
+      // Extract the filename without extension
+      const fullFileName = file.name;
+      const fileNameWithoutExt = fullFileName.replace(/\.[^/.]+$/, "").replace(/\.proj$/, "");
 
       reader.onload = (e) => {
         try {
@@ -35,7 +39,7 @@ export default function FileUploader({ onFileLoaded }: FileUploaderProps) {
             })),
           };
 
-          onFileLoaded(formattedTranscript);
+          onFileLoaded(formattedTranscript, fileNameWithoutExt);
           setError(null);
         } catch (err) {
           setError("Failed to parse file. Please ensure it's a valid JSON transcript.");
