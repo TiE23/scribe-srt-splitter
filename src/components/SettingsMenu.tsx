@@ -4,8 +4,8 @@ export default function SettingsMenu() {
   const { settings, updateSetting, resetSettings } = useSettings();
 
   return (
-    <div className="rounded-lg bg-white p-4 shadow-md">
-      <div className="mb-4">
+    <div className="flex flex-col gap-y-2 p-4">
+      <div className="mb-4 flex flex-col gap-y-2">
         <label className="flex cursor-pointer items-center gap-x-2">
           <input
             type="checkbox"
@@ -14,9 +14,10 @@ export default function SettingsMenu() {
             className="rounded"
           />
           <p className="ml-2 font-light">
-            Append an em dash (—) to a the end of a card if not at the end of a sentence.
+            Append an em dash (—) to a the end of a card if made within a sentence.
           </p>
         </label>
+
         <label className="flex cursor-pointer items-center gap-x-2">
           <input
             type="checkbox"
@@ -27,6 +28,16 @@ export default function SettingsMenu() {
           <p className="ml-2 font-light">
             Prefix an em dash (—) to a the start of a card following a previous em dash.
           </p>
+        </label>
+
+        <label className="flex cursor-pointer items-center gap-x-2">
+          <input
+            type="checkbox"
+            checked={settings.aggressiveEmDash}
+            onChange={(e) => updateSetting("aggressiveEmDash", e.target.checked)}
+            className="rounded"
+          />
+          <p className="ml-2 font-light">Appended em dashes (—) strip punctuation.</p>
         </label>
       </div>
 

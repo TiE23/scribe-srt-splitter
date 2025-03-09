@@ -8,6 +8,9 @@ const PAUSE_ADJUSTMENT_CHARACTER_DURATION = 0.05;
 const PAUSE_ADJUSTMENT_MINIMUM_DURATION_HEAD = PAUSE_ADJUSTMENT_CHARACTER_DURATION * 5;
 const PAUSE_ADJUSTMENT_MINIMUM_DURATION_TAIL = PAUSE_ADJUSTMENT_CHARACTER_DURATION * 8;
 
+const AGGRESSIVE_EM_DASH_PUNCTUATION = [".", "!", "?"];
+const LAX_EM_DASH_PUNCTUATION = [",", ".", "!", "?", ":", ";"];
+
 const getDuration = (word: FormattedWord) => word.end - word.start;
 const getAlternativeDuration = (text: string, trimMode: "head" | "tail"): number =>
   Math.max(
@@ -61,8 +64,13 @@ export const generateSrt = (
           // Get the last character of the current text
           const lastChar = currentText.trim().slice(-1);
 
+          const isAggressive = settings.aggressiveEmDash;
+          const punctuation = isAggressive
+            ? AGGRESSIVE_EM_DASH_PUNCTUATION
+            : LAX_EM_DASH_PUNCTUATION;
+
           // Check if it doesn't end with sentence-ending punctuation
-          if (![".", "!", "?"].includes(lastChar)) {
+          if (!punctuation.includes(lastChar)) {
             // Remove trailing comma, colon, or semicolon if present
             if ([",", ":", ";"].includes(lastChar)) {
               currentText = currentText.trim().slice(0, -1);
