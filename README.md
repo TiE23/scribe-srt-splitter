@@ -1,8 +1,8 @@
-# Scribe SRT Splitter
+# ElevenLabs Scribe JSON to Custom Timed SRT Tool
 
-A simple tool for converting ElevenLabs Scribe Speech-to-Text JSON transcriptions into SRT subtitle files with custom formatting.
+A simple tool for converting [ElevenLabs' Scribe](https://elevenlabs.io/blog/meet-scribe) Speech-to-Text JSON transcriptions into SRT subtitle files with custom formatting.
 
-<img width="782" alt="scribe-srt-splitter-example" src="https://github.com/user-attachments/assets/3233508b-10f3-452e-bc7a-fa106fca4442" />
+<img width="1071" alt="scribe-srt-splitter-example" src="https://github.com/user-attachments/assets/5b7987fe-6f58-426c-977b-a332078d807c" />
 
 ## Overview
 
@@ -12,24 +12,26 @@ Scribe SRT Splitter allows you to take the detailed JSON transcriptions generate
 
 - **Simple Drag & Drop Interface**: Upload your Scribe JSON files with a simple drag and drop
 - **Visual Editing**: Click on words to add formatting:
-  - Single-click to add a new line
-  - Double-click to create a new subtitle card
-  - Right-click to remove formatting
+  - First click: add a new line
+  - Second click: create a new subtitle card
+  - Third click: to remove formatting
 - **Live Preview**: See how your subtitles will look in real-time as you edit
-- **Smart Timing**: Automatically handles pauses in speech to ensure subtitles appear at the right time
+- **Smart Trimming**: Automatically trims overly-long pauses to prevent subtitles from appearing too early or lingering too long
 - **Project Saving**: Save your work as project files to continue editing later
-- **SRT Export**: Generate industry-standard SRT files ready for use in video editing software
+- **SRT Export**: Generate SRT files ready for use in video or subtitle editing software
+- **Persistent Settings**: Modify behavior of the app with persistent settings
 
 ## How to Use
+⭐️ Hosted as a GitHub Page at [tie23.github.io/scribe-srt-splitter](https://tie23.github.io/scribe-srt-splitter/)
 
 1. **Upload a Transcript**: Drag and drop your Scribe JSON file onto the upload area
 2. **Format Your Subtitles**:
    - Click a word to add a line break after it (highlighted in green)
-   - Double-click a word to start a new subtitle card after it (highlighted in purple)
-   - Right-click a word to remove any formatting
+   - Click a word again to start a new subtitle card after it (highlighted in purple)
+   - Click a word a third time to remove any formatting
 3. **Review in Preview**: Check the preview panel to see how your subtitles will look
 4. **Export Your Work**:
-   - Click "Export JSON" to save your project for later editing
+   - Click "Save JSON" to save your project for later editing (just upload again)
    - Click "Export SRT" to generate the final subtitle file
 
 ## Technical Details
@@ -38,7 +40,7 @@ This tool is built with:
 - Next.js
 - TypeScript
 - Tailwind CSS v4
-- Bun (JavaScript runtime)
+- [Bun](https://bun.sh/) (A fun, new TypeScript runtime)
 
 It runs entirely in the browser with no server-side processing, making it fast and privacy-friendly. Your transcription data never leaves your computer.
 
@@ -58,3 +60,8 @@ bun install
 bun run dev
 ```
 
+If you're not _bun curious_, you can just use `npm` or `yarn` and get the same results.
+
+## See Also...
+- [ElevenLabs Blog - Meet Scribe](https://elevenlabs.io/blog/meet-scribe)
+- [ElevenLabs Docs - Speech to Text](https://elevenlabs.io/docs/capabilities/speech-to-text)

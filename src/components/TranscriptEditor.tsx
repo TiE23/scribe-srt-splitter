@@ -63,7 +63,9 @@ export default function TranscriptEditor({
     <div className="mb-8 flex w-full flex-col gap-y-4">
       <div className="relative flex flex-row items-center justify-between rounded-lg bg-white p-6 shadow-md">
         <div>
-          <h2 className="mb-4 text-xl font-bold">11Labs Scribe JSON to Custom Timed SRT Tool</h2>
+          <h2 className="mb-4 text-xl font-bold">
+            ElevenLabs Scribe JSON to Custom Timed SRT Tool
+          </h2>
           <div className="mb-4 text-sm text-gray-600">
             <p>Click a word to cycle through formatting options:</p>
             <p className="ml-4">
