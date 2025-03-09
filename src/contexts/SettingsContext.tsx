@@ -6,12 +6,14 @@ import { localStorageUtils } from "@utils/browser";
 // Define the settings interface
 export interface Settings {
   sentenceCardBreakDash: boolean;
+  matchingEmDash: boolean;
   // Add more settings here as needed
 }
 
 // Default settings
 const defaultSettings: Settings = {
   sentenceCardBreakDash: false,
+  matchingEmDash: false,
 };
 
 // Define the context shape

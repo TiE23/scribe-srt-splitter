@@ -84,7 +84,17 @@ export const generateSrt = (
         endTime: secondsToSrtTime(adjustedEnd),
         text: "",
       };
-      currentText = curWord.text;
+
+      // Check if we need to add an em dash at the beginning
+      if (
+        settings.matchingEmDash &&
+        subtitles.length > 0 &&
+        subtitles[subtitles.length - 1].text.trim().endsWith("—")
+      ) {
+        currentText = "—" + curWord.text;
+      } else {
+        currentText = curWord.text;
+      }
     } else {
       // If the previous word was marked with newLineAfter, add a line break
       if (i > 0 && prevWord?.newLineAfter) {

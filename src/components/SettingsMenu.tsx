@@ -17,6 +17,17 @@ export default function SettingsMenu() {
             Append an em dash (—) to a the end of a card if not at the end of a sentence.
           </p>
         </label>
+        <label className="flex cursor-pointer items-center gap-x-2">
+          <input
+            type="checkbox"
+            checked={settings.matchingEmDash}
+            onChange={(e) => updateSetting("matchingEmDash", e.target.checked)}
+            className="rounded"
+          />
+          <p className="ml-2 font-light">
+            Prefix an em dash (—) to a the start of a card following a previous em dash.
+          </p>
+        </label>
       </div>
 
       <button
