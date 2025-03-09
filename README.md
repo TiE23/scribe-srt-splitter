@@ -2,7 +2,7 @@
 
 A simple tool for converting ElevenLabs Scribe Speech-to-Text JSON transcriptions into SRT subtitle files with custom formatting.
 
-![Example of the app in action.](https://kylegeib.s3.us-west-2.amazonaws.com/pictures/scribe-srt-splitter-example.png)
+<img width="782" alt="scribe-srt-splitter-example" src="https://github.com/user-attachments/assets/3233508b-10f3-452e-bc7a-fa106fca4442" />
 
 ## Overview
 
@@ -58,6 +58,3 @@ bun install
 bun run dev
 ```
 
-## License
-
-None, you can steal this. I don't care. Leave me a star, though.
