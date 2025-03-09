@@ -1,6 +1,6 @@
 "use client";
 
-import { FormattedWord } from "@/types";
+import { FormattedWord } from "@types";
 import { getWordClasses } from "@utils/styles";
 import clsx from "clsx";
 

@@ -1,5 +1,6 @@
 import { FormattedTranscript, FormattedWord, SRTSubtitle } from "@types";
 import { secondsToSrtTime } from "./time";
+import { Settings } from "@contexts/SettingsContext";
 
 // Detect when there is a pause before a line.
 const PAUSE_DETECTION_THRESHOLD = 0.5;
@@ -19,6 +20,7 @@ const getAlternativeDuration = (text: string, trimMode: "head" | "tail"): number
 // Generate SRT content
 export const generateSrt = (
   transcript: FormattedTranscript,
+  settings: Settings,
 ): { srtContent: string; subtitles: SRTSubtitle[] } => {
   const words = transcript.words.filter((word) => word.type === "word");
   const subtitles: SRTSubtitle[] = [];
@@ -54,6 +56,23 @@ export const generateSrt = (
     if (i === 0 || (i > 0 && prevWord?.newCardAfter)) {
       // Save the previous subtitle if it exists
       if (currentSubtitle) {
+        // Apply em dash formatting if enabled in settings
+        if (settings.sentenceCardBreakDash && i > 0 && prevWord?.newCardAfter) {
+          // Get the last character of the current text
+          const lastChar = currentText.trim().slice(-1);
+
+          // Check if it doesn't end with sentence-ending punctuation
+          if (![".", "!", "?"].includes(lastChar)) {
+            // Remove trailing comma, colon, or semicolon if present
+            if ([",", ":", ";"].includes(lastChar)) {
+              currentText = currentText.trim().slice(0, -1);
+            }
+
+            // Add em dash
+            currentText = currentText.trim() + "—";
+          }
+        }
+
         currentSubtitle.text = currentText.trim();
         subtitles.push(currentSubtitle);
       }

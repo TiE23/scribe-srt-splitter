@@ -1,10 +1,13 @@
 "use client";
 
-import { useCallback, useMemo } from "react";
-import { FormattedTranscript } from "@/types";
+import { useCallback, useMemo, useState } from "react";
+import { FormattedTranscript } from "@types";
 import WordElement from "./WordElement";
 import { getWordClasses } from "@utils/styles";
 import { generateSrt } from "@utils/export";
+import { useSettings } from "@contexts/SettingsContext";
+import SettingsButton from "./SettingsButton";
+import SettingsModal from "./SettingsModal";
 
 interface TranscriptEditorProps {
   transcript: FormattedTranscript;
@@ -16,6 +19,9 @@ export default function TranscriptEditor({
   setTranscript,
   children,
 }: React.PropsWithChildren<TranscriptEditorProps>) {
+  const { settings } = useSettings();
+  const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+
   // Handle word click - rotate through states: none → newLine → newCard → none
   const handleWordClick = useCallback(
     (index: number) => {
@@ -51,23 +57,30 @@ export default function TranscriptEditor({
   );
 
   // Enhanced preview section in TranscriptEditor.tsx
-  const { subtitles } = useMemo(() => generateSrt(transcript), [transcript]);
+  const { subtitles } = useMemo(() => generateSrt(transcript, settings), [transcript, settings]);
 
   return (
     <div className="mb-8 flex w-full flex-col gap-y-4">
-      <div className="flex flex-row items-center justify-between rounded-lg bg-white p-6 shadow-md">
+      <div className="relative flex flex-row items-center justify-between rounded-lg bg-white p-6 shadow-md">
         <div>
-          <h2 className="text-xl2 mb-4 font-bold">Scribe JSON to SRT Tool</h2>
-          <div className="mb-4 w-fit text-sm text-gray-600">
+          <h2 className="mb-4 text-xl font-bold">11Labs Scribe JSON to Custom Timed SRT Tool</h2>
+          <div className="mb-4 text-sm text-gray-600">
             <p>Click a word to cycle through formatting options:</p>
-            <p className="ml-4 text-nowrap">
+            <p className="ml-4">
               • No formatting → <span className={getWordClasses(false, true)}>New line</span> →{" "}
               <span className={getWordClasses(true, false)}>New subtitle card</span> → No formatting
             </p>
           </div>
         </div>
-        {children}
+
+        <div className="flex items-center">
+          {children}
+          <SettingsButton onClick={() => setIsSettingsOpen(true)} />
+        </div>
       </div>
+
+      {/* Settings Modal */}
+      {isSettingsOpen && <SettingsModal onClickClose={() => setIsSettingsOpen(false)} />}
 
       <div className="@container grid h-[calc(100vh-80px)] grid-cols-8 gap-2">
         {/* Transcript Section */}

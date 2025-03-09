@@ -2,6 +2,7 @@
 
 import { useState, useCallback } from "react";
 import { FormattedTranscript } from "@types";
+import clsx from "clsx";
 
 interface FileUploaderProps {
   onFileLoaded: (data: FormattedTranscript, fileName: string | null) => void;
@@ -71,9 +72,10 @@ export default function FileUploader({ onFileLoaded }: FileUploaderProps) {
 
   return (
     <div
-      className={`w-full max-w-2xl rounded-lg border-2 border-dashed p-12 text-center transition-colors ${
-        isDragging ? "border-blue-500 bg-blue-50" : "border-gray-300 hover:border-blue-300"
-      }`}
+      className={clsx(
+        "w-full max-w-2xl rounded-lg border-2 border-dashed bg-white p-12 text-center transition-colors",
+        isDragging ? "border-blue-500 bg-blue-50" : "border-gray-300 hover:border-blue-300",
+      )}
       onDragOver={(e) => {
         e.preventDefault();
         setIsDragging(true);
