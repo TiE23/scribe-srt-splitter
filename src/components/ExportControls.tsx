@@ -1,7 +1,7 @@
 "use client";
 
 import { FormattedTranscript } from "@/types";
-import { generateSrtContent } from "@utils/export";
+import { generateSrt } from "@utils/export";
 
 interface ExportControlsProps {
   transcript: FormattedTranscript;
@@ -28,7 +28,7 @@ export default function ExportControls({ transcript, uploadedFileName }: ExportC
   };
 
   const handleExportSrt = () => {
-    const srtContent = generateSrtContent(transcript);
+    const { srtContent } = generateSrt(transcript);
     const blob = new Blob([srtContent], { type: "text/plain" });
     const url = URL.createObjectURL(blob);
 

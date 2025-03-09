@@ -4,7 +4,7 @@ import { useCallback, useMemo } from "react";
 import { FormattedTranscript } from "@/types";
 import WordElement from "./WordElement";
 import { getWordClasses } from "@utils/styles";
-import { formatTime } from "@utils/time";
+import { generateSrt } from "@utils/export";
 
 interface TranscriptEditorProps {
   transcript: FormattedTranscript;
@@ -78,64 +78,7 @@ export default function TranscriptEditor({
   );
 
   // Enhanced preview section in TranscriptEditor.tsx
-  const previewContent = useMemo(() => {
-    const words = transcript.words.filter((word) => word.type === "word");
-    const subtitles: {
-      text: string;
-      startTime: number;
-      endTime: number;
-    }[] = [];
-
-    let currentSubtitle: { text: string; startTime: number; endTime: number } | null = null;
-    let currentText = "";
-
-    for (let i = 0; i < words.length; i++) {
-      const word = words[i];
-
-      // Start a new subtitle if it's the first word or the previous word was marked with newCardAfter
-      if (i === 0 || (i > 0 && words[i - 1].newCardAfter)) {
-        // Save the previous subtitle if it exists
-        if (currentSubtitle) {
-          currentSubtitle.text = currentText.trim();
-          subtitles.push(currentSubtitle);
-        }
-
-        // Start a new subtitle
-        currentSubtitle = {
-          text: "",
-          startTime: word.start,
-          endTime: word.end,
-        };
-        currentText = word.text;
-      } else {
-        // If the previous word was marked with newLineAfter, add a line break
-        if (i > 0 && words[i - 1].newLineAfter) {
-          currentText += "\n" + word.text;
-        } else {
-          // Add space or not based on punctuation
-          const punctuation = [",", ".", "!", "?", ":", ";"];
-          if (punctuation.includes(word.text)) {
-            currentText += word.text;
-          } else {
-            currentText += " " + word.text;
-          }
-        }
-
-        // Update the end time
-        if (currentSubtitle) {
-          currentSubtitle.endTime = word.end;
-        }
-      }
-    }
-
-    // Add the last subtitle
-    if (currentSubtitle) {
-      currentSubtitle.text = currentText.trim();
-      subtitles.push(currentSubtitle);
-    }
-
-    return subtitles;
-  }, [transcript]);
+  const { subtitles } = useMemo(() => generateSrt(transcript), [transcript]);
 
   return (
     <div className="mb-8 flex w-full flex-col gap-y-4">
@@ -185,11 +128,11 @@ export default function TranscriptEditor({
         <div className="col-span-3 flex flex-col rounded-lg bg-white p-4 shadow-md @md:h-[98cqh] @lg:h-[98cqh]">
           <h2 className="mb-4 text-xl font-bold">Preview</h2>
           <div className="flex flex-grow flex-col overflow-x-hidden overflow-y-auto">
-            {previewContent.map((subtitle, index) => (
+            {subtitles.map((subtitle, index) => (
               <div key={index} className="subtitle-card">
                 <div className="subtitle-index">Subtitle {index + 1}</div>
                 <div className="subtitle-time">
-                  {formatTime(subtitle.startTime)} → {formatTime(subtitle.endTime)}
+                  {subtitle.startTime} → {subtitle.endTime}
                 </div>
                 <div className="subtitle-text">{subtitle.text}</div>
               </div>

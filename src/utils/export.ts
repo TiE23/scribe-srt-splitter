@@ -1,13 +1,25 @@
-import { FormattedTranscript, SRTSubtitle } from "@types";
+import { FormattedTranscript, FormattedWord, SRTSubtitle } from "@types";
 import { secondsToSrtTime } from "./time";
 
 // Detect when there is a pause before a line.
 const PAUSE_DETECTION_THRESHOLD = 0.5;
-const PAUSE_ADJUSTMENT_CHARACTER_DURATION = 0.04;
-const PAUSE_ADJUSTMENT_MINIMUM_DURATION = PAUSE_ADJUSTMENT_CHARACTER_DURATION * 5;
+const PAUSE_ADJUSTMENT_CHARACTER_DURATION = 0.05;
+const PAUSE_ADJUSTMENT_MINIMUM_DURATION_HEAD = PAUSE_ADJUSTMENT_CHARACTER_DURATION * 5;
+const PAUSE_ADJUSTMENT_MINIMUM_DURATION_TAIL = PAUSE_ADJUSTMENT_CHARACTER_DURATION * 8;
+
+const getDuration = (word: FormattedWord) => word.end - word.start;
+const getAlternativeDuration = (text: string, trimMode: "head" | "tail"): number =>
+  Math.max(
+    text.length * PAUSE_ADJUSTMENT_CHARACTER_DURATION,
+    trimMode === "head"
+      ? PAUSE_ADJUSTMENT_MINIMUM_DURATION_HEAD
+      : PAUSE_ADJUSTMENT_MINIMUM_DURATION_TAIL,
+  );
 
 // Generate SRT content
-export const generateSrtContent = (transcript: FormattedTranscript) => {
+export const generateSrt = (
+  transcript: FormattedTranscript,
+): { srtContent: string; subtitles: SRTSubtitle[] } => {
   const words = transcript.words.filter((word) => word.type === "word");
   const subtitles: SRTSubtitle[] = [];
 
@@ -15,24 +27,31 @@ export const generateSrtContent = (transcript: FormattedTranscript) => {
   let currentText = "";
 
   for (let i = 0; i < words.length; i++) {
-    const word = words[i];
+    const curWord = words.at(i)!; // We're in the loop, the word will always exist.
+    const prevWord = words.at(i - 1);
 
     // Adjust start time for words with long durations (pauses before them)
-    const wordDuration = word.end - word.start;
-    const adjustedStart =
-      wordDuration > PAUSE_DETECTION_THRESHOLD
-        ? Math.max(
-            word.end -
-              Math.max(
-                word.text.length * PAUSE_ADJUSTMENT_CHARACTER_DURATION,
-                PAUSE_ADJUSTMENT_MINIMUM_DURATION,
-              ),
-            word.start,
-          )
-        : word.start;
+    let adjustedStart = curWord.start;
+    let adjustedEnd = curWord.end;
+
+    if (getDuration(curWord) > PAUSE_DETECTION_THRESHOLD) {
+      if (prevWord?.newCardAfter) {
+        // If the previous word was marked with newCardAfter, we should adjust the start time.
+        adjustedStart = Math.max(
+          curWord.end - getAlternativeDuration(curWord.text, "head"),
+          curWord.start,
+        );
+      } else if (curWord?.newCardAfter) {
+        // If the current word is marked with newCardAfter, we should adjust the end time.
+        adjustedEnd = Math.min(
+          curWord.start + getAlternativeDuration(curWord.text, "tail"),
+          curWord.end,
+        );
+      }
+    }
 
     // Start a new subtitle if it's the first word or the previous word was marked with newCardAfter
-    if (i === 0 || (i > 0 && words[i - 1].newCardAfter)) {
+    if (i === 0 || (i > 0 && prevWord?.newCardAfter)) {
       // Save the previous subtitle if it exists
       if (currentSubtitle) {
         currentSubtitle.text = currentText.trim();
@@ -43,27 +62,27 @@ export const generateSrtContent = (transcript: FormattedTranscript) => {
       currentSubtitle = {
         index: subtitles.length + 1,
         startTime: secondsToSrtTime(adjustedStart),
-        endTime: secondsToSrtTime(word.end),
+        endTime: secondsToSrtTime(adjustedEnd),
         text: "",
       };
-      currentText = word.text;
+      currentText = curWord.text;
     } else {
       // If the previous word was marked with newLineAfter, add a line break
-      if (i > 0 && words[i - 1].newLineAfter) {
-        currentText += "\n" + word.text;
+      if (i > 0 && prevWord?.newLineAfter) {
+        currentText += "\n" + curWord.text;
       } else {
         // Add space or not based on punctuation
         const punctuation = [",", ".", "!", "?", ":", ";"];
-        if (punctuation.includes(word.text)) {
-          currentText += word.text;
+        if (punctuation.includes(curWord.text)) {
+          currentText += curWord.text;
         } else {
-          currentText += " " + word.text;
+          currentText += " " + curWord.text;
         }
       }
 
       // Update the end time
       if (currentSubtitle) {
-        currentSubtitle.endTime = secondsToSrtTime(word.end);
+        currentSubtitle.endTime = secondsToSrtTime(adjustedEnd);
       }
     }
   }
@@ -82,5 +101,5 @@ export const generateSrtContent = (transcript: FormattedTranscript) => {
     srtContent += `${sub.text}\n\n`;
   }
 
-  return srtContent;
+  return { srtContent, subtitles };
 };
