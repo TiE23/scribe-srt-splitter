@@ -51,12 +51,16 @@ export default function WordElement({ word, onClick, onEdit }: WordElementProps)
       {isEditing ? (
         <input
           ref={inputRef}
-          className="inline-block w-[10ch] min-w-[2ch] border border-blue-500 px-1 py-0 text-blue-700 outline-none"
+          className="inline-block w-[10ch] rounded-xs border border-blue-500 px-1 py-0 text-blue-700 outline-none"
           value={editText}
           placeholder={word.text}
           onChange={(e) => setEditText(e.target.value)}
           onBlur={handleBlur}
           onKeyDown={handleKeyDown}
+          autoComplete="off"
+          data-form-type="other"
+          data-lpignore="true"
+          data-1password-ignore="true"
         />
       ) : (
         <span
