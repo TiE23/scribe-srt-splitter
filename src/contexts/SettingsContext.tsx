@@ -11,6 +11,7 @@ export interface Settings {
   autoEllipsesPairs: boolean;
   autoCommaToEllipses: boolean;
   rule: number;
+  centerText: boolean;
   // Add more settings here as needed
 }
 
@@ -21,6 +22,7 @@ const defaultSettings: Settings = {
   aggressiveEmDash: false,
   autoEllipsesPairs: false,
   autoCommaToEllipses: false,
+  centerText: false,
   rule: 0,
 };
 

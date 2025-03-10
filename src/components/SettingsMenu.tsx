@@ -64,7 +64,8 @@ export default function SettingsMenu() {
           </p>
         </label>
 
-        <div className="mb-2 border-t border-gray-200 pt-2"></div>
+        <div className="mb-2 border-t border-gray-200 pt-2" />
+
         {/* Rule setting with number input */}
         <div className="flex flex-col gap-y-1">
           <label htmlFor="rule-input" className="font-medium">
@@ -87,6 +88,16 @@ export default function SettingsMenu() {
             <p className="ml-3 font-light">Position of char rule guide (0 = off)</p>
           </div>
         </div>
+
+        <label className="flex cursor-pointer items-center gap-x-2">
+          <input
+            type="checkbox"
+            checked={settings.centerText}
+            onChange={(e) => updateSetting("centerText", e.target.checked)}
+            className="rounded"
+          />
+          <p className="ml-2 font-light">Center the text in subtitle preview cards.</p>
+        </label>
       </div>
 
       <button

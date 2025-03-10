@@ -8,6 +8,7 @@ import { generateSrt } from "@utils/export";
 import { useSettings } from "@contexts/SettingsContext";
 import SettingsButton from "./SettingsButton";
 import SettingsModal from "./SettingsModal";
+import clsx from "clsx";
 
 interface TranscriptEditorProps {
   transcript: FormattedTranscript;
@@ -114,7 +115,7 @@ export default function TranscriptEditor({
       <div className="@container mb-4 grid grid-cols-8 gap-2">
         {/* Transcript Section */}
         <div className="col-span-5 h-full rounded-lg bg-white p-4 shadow-md">
-          <h2 className="mb-4 text-xl font-bold">Transcript</h2>
+          <h2 className="mb-4 text-xl font-bold select-none">Transcript</h2>
           <div className="h-[90cqh] overflow-y-scroll py-2 leading-relaxed">
             {transcript.words
               .map((word, originalIndex) => {
@@ -136,7 +137,7 @@ export default function TranscriptEditor({
         </div>
         {/* Preview Section */}
         <div className="col-span-3 h-full rounded-lg bg-white p-4 shadow-md">
-          <h2 className="mb-4 text-xl font-bold">Preview</h2>
+          <h2 className="mb-4 text-xl font-bold select-none">Preview</h2>
           <div className="flex h-[90cqh] flex-grow flex-col overflow-x-hidden overflow-y-scroll">
             {subtitles.map((subtitle, index) => (
               <div key={index} className="subtitle-card relative overflow-clip">
@@ -144,14 +145,14 @@ export default function TranscriptEditor({
                 <div className="subtitle-time">
                   {subtitle.startTime} → {subtitle.endTime}
                 </div>
-                <div className="subtitle-text relative">
+                <div className="subtitle-text relative w-fit">
                   {settings.rule && (
                     <div
                       className="absolute h-full w-px bg-purple-600/30"
                       style={{ left: `${settings.rule * 5}px` }}
                     />
                   )}
-                  {subtitle.text}
+                  <div className={clsx(settings.centerText && "text-center")}>{subtitle.text}</div>
                 </div>
               </div>
             ))}
