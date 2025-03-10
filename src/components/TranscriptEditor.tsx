@@ -80,8 +80,8 @@ export default function TranscriptEditor({
   const { subtitles } = useMemo(() => generateSrt(transcript, settings), [transcript, settings]);
 
   return (
-    <div className="mb-8 flex w-full flex-col gap-y-4">
-      <div className="relative flex flex-row items-center justify-between rounded-lg bg-white p-6 shadow-md">
+    <div className="flex w-full flex-col gap-y-4 px-4 pt-4">
+      <div className="flex flex-row items-center justify-between rounded-lg bg-white p-6 shadow-md">
         <div className="flex flex-col gap-y-4">
           <h2 className="text-xl font-bold">ElevenLabs Scribe JSON to Custom Timed SRT Tool</h2>
           <div className="flex flex-col gap-y-2 text-sm text-gray-600">
@@ -110,11 +110,11 @@ export default function TranscriptEditor({
       {/* Settings Modal */}
       {isSettingsOpen && <SettingsModal onClickClose={() => setIsSettingsOpen(false)} />}
 
-      <div className="@container grid h-[calc(100vh-80px)] grid-cols-8 gap-2">
+      <div className="@container mb-4 grid grid-cols-8 gap-2">
         {/* Transcript Section */}
-        <div className="col-span-5 rounded-lg bg-white p-4 shadow-md @md:h-[98cqh] @lg:h-[98cqh]">
+        <div className="col-span-5 h-full rounded-lg bg-white p-4 shadow-md">
           <h2 className="mb-4 text-xl font-bold">Transcript</h2>
-          <div className="h-[90cqh] overflow-y-scroll px-4 py-2 leading-relaxed">
+          <div className="h-[90cqh] overflow-y-scroll py-2 leading-relaxed">
             {transcript.words
               .map((word, originalIndex) => {
                 if (word.type === "word") {
@@ -134,16 +134,24 @@ export default function TranscriptEditor({
           </div>
         </div>
         {/* Preview Section */}
-        <div className="col-span-3 flex flex-col rounded-lg bg-white p-4 shadow-md @md:h-[98cqh] @lg:h-[98cqh]">
+        <div className="col-span-3 h-full rounded-lg bg-white p-4 shadow-md">
           <h2 className="mb-4 text-xl font-bold">Preview</h2>
-          <div className="flex flex-grow flex-col overflow-x-hidden overflow-y-auto">
+          <div className="flex h-[90cqh] flex-grow flex-col overflow-x-hidden overflow-y-scroll">
             {subtitles.map((subtitle, index) => (
-              <div key={index} className="subtitle-card">
+              <div key={index} className="subtitle-card relative overflow-clip">
                 <div className="subtitle-index">Subtitle {index + 1}</div>
                 <div className="subtitle-time">
                   {subtitle.startTime} → {subtitle.endTime}
                 </div>
-                <div className="subtitle-text">{subtitle.text}</div>
+                <div className="subtitle-text relative">
+                  {settings.rule && (
+                    <div
+                      className="absolute h-full w-px bg-purple-600/30"
+                      style={{ left: `${settings.rule}ch` }}
+                    />
+                  )}
+                  {subtitle.text}
+                </div>
               </div>
             ))}
           </div>
