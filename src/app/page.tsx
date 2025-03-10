@@ -16,15 +16,13 @@ export default function Home() {
   };
 
   return (
-    <main className="flex min-h-screen flex-col items-center p-4 sm:p-8">
+    <main className="flex min-h-screen flex-col items-center">
       {!transcript ? (
         <FileUploader onFileLoaded={handleFileLoaded} />
       ) : (
-        <>
-          <TranscriptEditor transcript={transcript} setTranscript={setTranscript}>
-            <ExportControls transcript={transcript} uploadedFileName={uploadedFileName} />
-          </TranscriptEditor>
-        </>
+        <TranscriptEditor transcript={transcript} setTranscript={setTranscript}>
+          <ExportControls transcript={transcript} uploadedFileName={uploadedFileName} />
+        </TranscriptEditor>
       )}
     </main>
   );

@@ -53,6 +53,7 @@ export default function WordElement({ word, onClick, onEdit }: WordElementProps)
           ref={inputRef}
           className="inline-block w-[10ch] min-w-[2ch] border border-blue-500 px-1 py-0 text-blue-700 outline-none"
           value={editText}
+          placeholder={word.text}
           onChange={(e) => setEditText(e.target.value)}
           onBlur={handleBlur}
           onKeyDown={handleKeyDown}

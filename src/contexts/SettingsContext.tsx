@@ -8,6 +8,9 @@ export interface Settings {
   sentenceCardBreakDash: boolean;
   matchingEmDash: boolean;
   aggressiveEmDash: boolean;
+  autoEllipsesPairs: boolean;
+  autoCommaToEllipses: boolean;
+  rule: number;
   // Add more settings here as needed
 }
 
@@ -16,6 +19,9 @@ const defaultSettings: Settings = {
   sentenceCardBreakDash: false,
   matchingEmDash: false,
   aggressiveEmDash: false,
+  autoEllipsesPairs: false,
+  autoCommaToEllipses: false,
+  rule: 0,
 };
 
 // Define the context shape

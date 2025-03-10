@@ -22,7 +22,11 @@ const getAlternativeDuration = (text: string, trimMode: "head" | "tail"): number
 
 // Get the actual text to use based on original or revised
 const getWordText = (word: FormattedWord): string => {
-  return word.revisedText || word.text;
+  if (word.revisedText) {
+    if (word.revisedText === "_") return "";
+    return word.revisedText;
+  }
+  return word.text;
 };
 
 // Generate SRT content
@@ -38,7 +42,7 @@ export const generateSrt = (
 
   for (let i = 0; i < words.length; i++) {
     const curWord = words.at(i)!; // We're in the loop, the word will always exist.
-    const prevWord = words.at(i - 1);
+    const prevWord = i === 0 ? undefined : words.at(i - 1);
 
     // Adjust start time for words with long durations (pauses before them)
     let adjustedStart = curWord.start;
@@ -67,7 +71,7 @@ export const generateSrt = (
         // Apply em dash formatting if enabled in settings
         if (settings.sentenceCardBreakDash && i > 0 && prevWord?.newCardAfter) {
           // Get the last character of the current text
-          const lastChar = currentText.trim().slice(-1);
+          const lastChar = currentText.trim().replace(/"$/, "").slice(-1);
 
           const isAggressive = settings.aggressiveEmDash;
           const punctuation = isAggressive
@@ -98,7 +102,7 @@ export const generateSrt = (
         text: "",
       };
 
-      // Check if we need to add an em dash at the beginning
+      // Check if we need to add an em dash at the beginning. (matchingEmDash)
       if (
         settings.matchingEmDash &&
         subtitles.length > 0 &&
@@ -108,6 +112,16 @@ export const generateSrt = (
       } else {
         currentText = getWordText(curWord);
       }
+
+      // Automatically add ellipses word if previous word ends with them. (autoEllipsesPairs)
+      if (
+        settings.autoEllipsesPairs &&
+        subtitles.length > 0 &&
+        subtitles[subtitles.length - 1].text.trim().endsWith("...") &&
+        !currentText.startsWith("...")
+      ) {
+        currentText = "..." + currentText;
+      }
     } else {
       // If the previous word was marked with newLineAfter, add a line break
       if (i > 0 && prevWord?.newLineAfter) {
@@ -116,7 +130,11 @@ export const generateSrt = (
         // Add space or not based on punctuation
         const punctuation = [",", ".", "!", "?", ":", ";"];
         const wordText = getWordText(curWord);
-        if (punctuation.includes(wordText)) {
+
+        // Skip adding anything if the word is empty.
+        if (wordText === "") {
+          // Do nothing - don't add space or text
+        } else if (punctuation.includes(wordText)) {
           currentText += wordText;
         } else {
           currentText += " " + wordText;
@@ -127,6 +145,16 @@ export const generateSrt = (
       if (currentSubtitle) {
         currentSubtitle.endTime = secondsToSrtTime(adjustedEnd);
       }
+    }
+
+    // Automatically replace commas with ellipses. (autoCommaToEllipses)
+    if (
+      settings.autoCommaToEllipses &&
+      curWord.newCardAfter &&
+      subtitles.length > 0 &&
+      currentText.endsWith(",")
+    ) {
+      currentText = currentText.slice(0, -1) + "...";
     }
   }
 

@@ -39,6 +39,54 @@ export default function SettingsMenu() {
           />
           <p className="ml-2 font-light">Appended em dashes (—) strip punctuation.</p>
         </label>
+
+        <label className="flex cursor-pointer items-center gap-x-2">
+          <input
+            type="checkbox"
+            checked={settings.autoCommaToEllipses}
+            onChange={(e) => updateSetting("autoCommaToEllipses", e.target.checked)}
+            className="rounded"
+          />
+          <p className="ml-2 font-light">
+            Automatically replace commas with ellipses (...) on revised new cards.
+          </p>
+        </label>
+
+        <label className="flex cursor-pointer items-center gap-x-2">
+          <input
+            type="checkbox"
+            checked={settings.autoEllipsesPairs}
+            onChange={(e) => updateSetting("autoEllipsesPairs", e.target.checked)}
+            className="rounded"
+          />
+          <p className="ml-2 font-light">
+            Automatically add ellipses (...) on revised new cards to the next word.
+          </p>
+        </label>
+
+        <div className="mb-2 border-t border-gray-200 pt-2"></div>
+        {/* Rule setting with number input */}
+        <div className="flex flex-col gap-y-1">
+          <label htmlFor="rule-input" className="font-medium">
+            Rule Position
+          </label>
+          <div className="flex items-center">
+            <input
+              id="rule-input"
+              type="number"
+              min={0}
+              max={100}
+              step={1}
+              value={settings.rule || 0}
+              onChange={(e) => {
+                const value = Math.min(300, Math.max(0, parseInt(e.target.value) || 0));
+                updateSetting("rule", value);
+              }}
+              className="w-20 rounded border border-gray-300 px-2 py-1"
+            />
+            <p className="ml-3 font-light">Position of char rule guide (0 = off)</p>
+          </div>
+        </div>
       </div>
 
       <button
