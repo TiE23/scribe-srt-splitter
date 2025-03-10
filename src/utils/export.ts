@@ -20,6 +20,11 @@ const getAlternativeDuration = (text: string, trimMode: "head" | "tail"): number
       : PAUSE_ADJUSTMENT_MINIMUM_DURATION_TAIL,
   );
 
+// Get the actual text to use based on original or revised
+const getWordText = (word: FormattedWord): string => {
+  return word.revisedText || word.text;
+};
+
 // Generate SRT content
 export const generateSrt = (
   transcript: FormattedTranscript,
@@ -43,13 +48,13 @@ export const generateSrt = (
       if (prevWord?.newCardAfter) {
         // If the previous word was marked with newCardAfter, we should adjust the start time.
         adjustedStart = Math.max(
-          curWord.end - getAlternativeDuration(curWord.text, "head"),
+          curWord.end - getAlternativeDuration(getWordText(curWord), "head"),
           curWord.start,
         );
       } else if (curWord?.newCardAfter) {
         // If the current word is marked with newCardAfter, we should adjust the end time.
         adjustedEnd = Math.min(
-          curWord.start + getAlternativeDuration(curWord.text, "tail"),
+          curWord.start + getAlternativeDuration(getWordText(curWord), "tail"),
           curWord.end,
         );
       }
@@ -99,21 +104,22 @@ export const generateSrt = (
         subtitles.length > 0 &&
         subtitles[subtitles.length - 1].text.trim().endsWith("—")
       ) {
-        currentText = "—" + curWord.text;
+        currentText = "—" + getWordText(curWord);
       } else {
-        currentText = curWord.text;
+        currentText = getWordText(curWord);
       }
     } else {
       // If the previous word was marked with newLineAfter, add a line break
       if (i > 0 && prevWord?.newLineAfter) {
-        currentText += "\n" + curWord.text;
+        currentText += "\n" + getWordText(curWord);
       } else {
         // Add space or not based on punctuation
         const punctuation = [",", ".", "!", "?", ":", ";"];
-        if (punctuation.includes(curWord.text)) {
-          currentText += curWord.text;
+        const wordText = getWordText(curWord);
+        if (punctuation.includes(wordText)) {
+          currentText += wordText;
         } else {
-          currentText += " " + curWord.text;
+          currentText += " " + wordText;
         }
       }
 

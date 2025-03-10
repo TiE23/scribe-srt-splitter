@@ -17,6 +17,7 @@ export interface ScribeTranscript {
 export interface FormattedWord extends ScribeWord {
   newLineAfter?: boolean;
   newCardAfter?: boolean;
+  revisedText?: string;
 }
 
 export interface FormattedTranscript extends ScribeTranscript {

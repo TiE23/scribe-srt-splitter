@@ -56,21 +56,47 @@ export default function TranscriptEditor({
     [setTranscript],
   );
 
+  // New handler for word editing
+  const handleWordEdit = useCallback(
+    (index: number, newText: string) => {
+      setTranscript((prev) => {
+        if (!prev) return null;
+
+        const newWords = [...prev.words];
+        const currentWord = newWords[index];
+
+        newWords[index] = {
+          ...currentWord,
+          revisedText: newText,
+        };
+
+        return { ...prev, words: newWords };
+      });
+    },
+    [setTranscript],
+  );
+
   // Enhanced preview section in TranscriptEditor.tsx
   const { subtitles } = useMemo(() => generateSrt(transcript, settings), [transcript, settings]);
 
   return (
     <div className="mb-8 flex w-full flex-col gap-y-4">
       <div className="relative flex flex-row items-center justify-between rounded-lg bg-white p-6 shadow-md">
-        <div>
-          <h2 className="mb-4 text-xl font-bold">
-            ElevenLabs Scribe JSON to Custom Timed SRT Tool
-          </h2>
-          <div className="mb-4 text-sm text-gray-600">
-            <p>Click a word to cycle through formatting options:</p>
+        <div className="flex flex-col gap-y-4">
+          <h2 className="text-xl font-bold">ElevenLabs Scribe JSON to Custom Timed SRT Tool</h2>
+          <div className="flex flex-col gap-y-2 text-sm text-gray-600">
+            <p>
+              <strong>Click</strong> a word to cycle through formatting options:
+            </p>
             <p className="ml-4">
-              • No formatting → <span className={getWordClasses(false, true)}>New line</span> →{" "}
+              No formatting → <span className={getWordClasses(false, true)}>New line</span> →{" "}
               <span className={getWordClasses(true, false)}>New subtitle card</span> → No formatting
+            </p>
+            <p>
+              <strong>Right-click</strong> on any word to edit its text.
+            </p>
+            <p className="ml-4">
+              Press <kbd>Enter</kbd> to save or <kbd>Esc</kbd> to cancel. Save blank to reset.
             </p>
           </div>
         </div>
@@ -98,6 +124,7 @@ export default function TranscriptEditor({
                       word={word}
                       index={originalIndex}
                       onClick={() => handleWordClick(originalIndex)}
+                      onEdit={(text) => handleWordEdit(originalIndex, text)}
                     />
                   );
                 }
