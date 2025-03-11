@@ -3,6 +3,7 @@
 import { FormattedTranscript } from "@types";
 import { generateSrt } from "@utils/export";
 import { useSettings } from "@contexts/SettingsContext";
+import { useEffect } from "react";
 
 interface ExportControlsProps {
   transcript: FormattedTranscript;
@@ -45,6 +46,21 @@ export default function ExportControls({ transcript, uploadedFileName }: ExportC
     document.body.removeChild(a);
     URL.revokeObjectURL(url);
   };
+
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if ((event.metaKey || event.ctrlKey) && event.key === "s") {
+        event.preventDefault();
+        handleExportJson();
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <div className="w-full max-w-4xl">
