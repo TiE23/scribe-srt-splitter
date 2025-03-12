@@ -146,12 +146,12 @@ export default function TranscriptEditor({
                   {subtitle.startTime} → {subtitle.endTime}
                 </div>
                 <div className="subtitle-text relative w-fit">
-                  {settings.rule && (
+                  {settings.rule ? (
                     <div
                       className="absolute h-full w-px bg-purple-600/30"
                       style={{ left: `${settings.rule * 5}px` }}
                     />
-                  )}
+                  ) : null}
                   <div className={clsx(settings.centerText && "text-center")}>{subtitle.text}</div>
                 </div>
               </div>

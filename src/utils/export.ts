@@ -9,7 +9,7 @@ const PAUSE_ADJUSTMENT_MINIMUM_DURATION_HEAD = PAUSE_ADJUSTMENT_CHARACTER_DURATI
 const PAUSE_ADJUSTMENT_MINIMUM_DURATION_TAIL = PAUSE_ADJUSTMENT_CHARACTER_DURATION * 8;
 
 const AGGRESSIVE_EM_DASH_PUNCTUATION = [".", "!", "?"];
-const LAX_EM_DASH_PUNCTUATION = [",", ".", "!", "?", ":", ";"];
+const LAX_EM_DASH_PUNCTUATION = [",", ".", "!", "?", ":", ";", "-", "–", "—"];
 
 const getDuration = (word: FormattedWord) => word.end - word.start;
 const getAlternativeDuration = (text: string, trimMode: "head" | "tail"): number =>
