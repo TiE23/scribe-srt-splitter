@@ -140,13 +140,18 @@ export default function TranscriptEditor({
           <h2 className="mb-4 text-xl font-bold select-none">Preview</h2>
           <div className="flex h-[90cqh] flex-grow flex-col overflow-x-hidden overflow-y-scroll">
             {subtitles.map((subtitle, index) => (
-              <div key={index} className="subtitle-card relative overflow-clip">
-                <div className="subtitle-index">Subtitle {index + 1}</div>
-                <div className="subtitle-time">
+              <div
+                key={index}
+                className="relative mb-4 overflow-clip rounded-md border-l-4 border-purple-500 bg-purple-50 p-3"
+              >
+                <div className="mb-1 text-xs font-semibold text-purple-500">
+                  Subtitle {index + 1}
+                </div>
+                <div className="mb-2 text-xs text-gray-500">
                   {subtitle.startTime} → {subtitle.endTime}
                 </div>
-                <div className="subtitle-text relative w-fit">
-                  {settings.rule ? (
+                <div className="relative w-fit text-base/6 whitespace-pre-line">
+                  {settings.rule > 0 ? (
                     <div
                       className="absolute h-full w-px bg-purple-600/30"
                       style={{ left: `${settings.rule * 5}px` }}
