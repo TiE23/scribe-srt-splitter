@@ -35,8 +35,10 @@ export default function FileUploader({ onFileLoaded }: FileUploaderProps) {
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
             words: json.words.map((word: any) => ({
               ...word,
-              isNewLine: word.isNewLine || false,
-              isNewCard: word.isNewCard || false,
+              newLineAfter: word.newLineAfter || word.isNewLine || false,
+              newCardAfter: word.newCardAfter || word.isNewCard || false,
+              isNewLine: undefined,
+              isNewCard: undefined,
             })),
           };
 

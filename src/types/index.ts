@@ -15,8 +15,8 @@ export interface ScribeTranscript {
 
 // Enhanced structure with formatting
 export interface FormattedWord extends ScribeWord {
-  newLineAfter?: boolean;
-  newCardAfter?: boolean;
+  newLineAfter: boolean;
+  newCardAfter: boolean;
   revisedText?: string;
 }
 
