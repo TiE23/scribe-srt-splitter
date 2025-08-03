@@ -4,13 +4,13 @@ import { useState } from "react";
 import FileUploader from "@components/FileUploader";
 import TranscriptEditor from "@components/TranscriptEditor";
 import ExportControls from "@components/ExportControls";
-import { FormattedTranscript } from "@types";
+import { ProjectTranscript } from "@types";
 
 export default function Home() {
-  const [transcript, setTranscript] = useState<FormattedTranscript | null>(null);
+  const [transcript, setTranscript] = useState<ProjectTranscript | null>(null);
   const [uploadedFileName, setUploadedFileName] = useState<string | null>(null);
 
-  const handleFileLoaded = (data: FormattedTranscript, fileName: string | null) => {
+  const handleFileLoaded = (data: ProjectTranscript, fileName: string | null) => {
     setTranscript(data);
     setUploadedFileName(fileName);
   };

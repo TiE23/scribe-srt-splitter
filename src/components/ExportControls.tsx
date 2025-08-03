@@ -1,12 +1,12 @@
 "use client";
 
-import { FormattedTranscript } from "@types";
+import { ProjectTranscript } from "@types";
 import { generateSrt } from "@utils/export";
 import { useSettings } from "@contexts/SettingsContext";
 import { useEffect } from "react";
 
 interface ExportControlsProps {
-  transcript: FormattedTranscript;
+  transcript: ProjectTranscript;
   uploadedFileName: string | null;
 }
 

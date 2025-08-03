@@ -1,12 +1,12 @@
 "use client";
 
-import { FormattedWord } from "@types";
+import { ProjectWord } from "@types";
 import { getWordClasses } from "@utils/styles";
 import clsx from "clsx";
 import { useState, useRef, useEffect } from "react";
 
 interface WordElementProps {
-  word: FormattedWord;
+  word: ProjectWord;
   index: number;
   onClick: () => void;
   onEdit: (text: string) => void;

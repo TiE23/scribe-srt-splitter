@@ -1,4 +1,4 @@
-import { FormattedTranscript, FormattedWord, SRTSubtitle } from "@types";
+import { ProjectTranscript, ProjectWord, SRTSubtitle } from "@types";
 import { secondsToSrtTime } from "./time";
 import { Settings } from "@contexts/SettingsContext";
 
@@ -11,7 +11,7 @@ const PAUSE_ADJUSTMENT_MINIMUM_DURATION_TAIL = PAUSE_ADJUSTMENT_CHARACTER_DURATI
 const AGGRESSIVE_EM_DASH_PUNCTUATION = [".", "!", "?"];
 const LAX_EM_DASH_PUNCTUATION = [",", ".", "!", "?", ":", ";", "-", "–", "—"];
 
-const getDuration = (word: FormattedWord) => word.end - word.start;
+const getDuration = (word: ProjectWord) => word.end - word.start;
 const getAlternativeDuration = (text: string, trimMode: "head" | "tail"): number =>
   Math.max(
     text.length * PAUSE_ADJUSTMENT_CHARACTER_DURATION,
@@ -21,7 +21,7 @@ const getAlternativeDuration = (text: string, trimMode: "head" | "tail"): number
   );
 
 // Get the actual text to use based on original or revised
-const getWordText = (word: FormattedWord): string => {
+const getWordText = (word: ProjectWord): string => {
   if (word.revisedText) {
     if (word.revisedText === "_") return "";
     return word.revisedText;
@@ -31,7 +31,7 @@ const getWordText = (word: FormattedWord): string => {
 
 // Generate SRT content
 export const generateSrt = (
-  transcript: FormattedTranscript,
+  transcript: ProjectTranscript,
   settings: Settings,
 ): { srtContent: string; subtitles: SRTSubtitle[] } => {
   const words = transcript.words.filter((word) => word.type === "word");
