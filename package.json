@@ -1,6 +1,6 @@
 {
   "name": "scribe-srt-splitter",
-  "version": "0.1.0",
+  "version": "2025-08-03_v1",
   "private": true,
   "scripts": {
     "dev": "next dev --turbopack",

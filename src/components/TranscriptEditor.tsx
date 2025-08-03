@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useMemo, useState } from "react";
-import { FormattedTranscript } from "@types";
+import { ProjectTranscript } from "@types";
 import WordElement from "./WordElement";
 import { getWordClasses } from "@utils/styles";
 import { generateSrt } from "@utils/export";
@@ -11,8 +11,8 @@ import SettingsModal from "./SettingsModal";
 import clsx from "clsx";
 
 interface TranscriptEditorProps {
-  transcript: FormattedTranscript;
-  setTranscript: React.Dispatch<React.SetStateAction<FormattedTranscript | null>>;
+  transcript: ProjectTranscript;
+  setTranscript: React.Dispatch<React.SetStateAction<ProjectTranscript | null>>;
 }
 
 export default function TranscriptEditor({

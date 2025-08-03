@@ -1,11 +1,12 @@
 "use client";
 
 import { useState, useCallback } from "react";
-import { FormattedTranscript } from "@types";
+import { ProjectTranscript } from "@types";
+import { parseTranscript } from "@/utils/transcriptParser";
 import clsx from "clsx";
 
 interface FileUploaderProps {
-  onFileLoaded: (data: FormattedTranscript, fileName: string | null) => void;
+  onFileLoaded: (data: ProjectTranscript, fileName: string | null) => void;
 }
 
 export default function FileUploader({ onFileLoaded }: FileUploaderProps) {
@@ -16,36 +17,26 @@ export default function FileUploader({ onFileLoaded }: FileUploaderProps) {
     (file: File) => {
       const reader = new FileReader();
 
-      // Extract the filename without extension
+      // Extract the filename without extension.
       const fullFileName = file.name;
       const fileNameWithoutExt = fullFileName.replace(/\.[^/.]+$/, "").replace(/\.proj$/, "");
 
       reader.onload = (e) => {
         try {
-          const json = JSON.parse(e.target?.result as string);
+          const content = e.target?.result as string;
+          const parseResult = parseTranscript(content);
 
-          // Check if it's a valid Scribe transcript
-          if (!json.words || !Array.isArray(json.words)) {
-            throw new Error("Invalid transcript format");
+          if (!parseResult.success) {
+            setError(
+              `Failed to parse file: ${parseResult.error}${parseResult.details ? ` (${parseResult.details})` : ""}`,
+            );
+            return;
           }
 
-          // Convert to our format if it's not already
-          const formattedTranscript: FormattedTranscript = {
-            ...json,
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            words: json.words.map((word: any) => ({
-              ...word,
-              newLineAfter: word.newLineAfter || word.isNewLine || false,
-              newCardAfter: word.newCardAfter || word.isNewCard || false,
-              isNewLine: undefined,
-              isNewCard: undefined,
-            })),
-          };
-
-          onFileLoaded(formattedTranscript, fileNameWithoutExt);
+          onFileLoaded(parseResult.data, fileNameWithoutExt);
           setError(null);
         } catch (err) {
-          setError("Failed to parse file. Please ensure it's a valid JSON transcript.");
+          setError("Unexpected error occurred while processing the file.");
           console.error(err);
         }
       };
@@ -75,7 +66,10 @@ export default function FileUploader({ onFileLoaded }: FileUploaderProps) {
   return (
     <div className="mt-4 flex max-w-[50ch] flex-col items-center gap-y-4">
       <div className="flex flex-col gap-y-2">
-        <h2 className="text-xl font-bold">ElevenLabs Scribe JSON to Custom Timed SRT Tool</h2>
+        <h2 className="text-xl font-bold">Scribe Transcript to Custom Timed SRT Tool</h2>
+        <p className="text-sm text-gray-600">
+          Supports Scribe v1, v2, and formatted transcript files
+        </p>
       </div>
 
       <div
@@ -105,8 +99,10 @@ export default function FileUploader({ onFileLoaded }: FileUploaderProps) {
               d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M9 19l3-3m0 0l3 3m-3-3v12"
             />
           </svg>
-          <p className="mb-2 text-lg font-semibold">Drag and drop your Scribe JSON file here</p>
-          <p className="mb-4 text-sm text-gray-500">or click to browse files</p>
+          <p className="mb-2 text-lg font-semibold">Drag and drop your transcript JSON file here</p>
+          <p className="mb-4 text-sm text-gray-500">
+            Supports Scribe v1, v2, or formatted transcript files
+          </p>
           <input
             type="file"
             className="hidden"
