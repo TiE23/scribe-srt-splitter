@@ -3,7 +3,7 @@
 import { ProjectTranscript } from "@types";
 import { generateSrt } from "@utils/export";
 import { useSettings } from "@contexts/SettingsContext";
-import { useEffect } from "react";
+import { useCallback, useEffect } from "react";
 
 interface ExportControlsProps {
   transcript: ProjectTranscript;
@@ -13,8 +13,8 @@ interface ExportControlsProps {
 export default function ExportControls({ transcript, uploadedFileName }: ExportControlsProps) {
   const { settings } = useSettings();
 
-  const handleExportJson = () => {
-    const jsonContent = JSON.stringify(transcript, null, 2);
+  const handleExportJson = useCallback(() => {
+    const jsonContent = JSON.stringify(projectTranscript, null, 2);
     const blob = new Blob([jsonContent], { type: "application/json" });
     const url = URL.createObjectURL(blob);
 
@@ -29,10 +29,10 @@ export default function ExportControls({ transcript, uploadedFileName }: ExportC
     a.click();
     document.body.removeChild(a);
     URL.revokeObjectURL(url);
-  };
+  }, [projectTranscript, uploadedFileName]);
 
-  const handleExportSrt = () => {
-    const { srtContent } = generateSrt(transcript, settings);
+  const handleExportSrt = useCallback(() => {
+    const { srtContent } = generateSrt(projectTranscript, settings);
     const blob = new Blob([srtContent], { type: "text/plain" });
     const url = URL.createObjectURL(blob);
 
@@ -45,7 +45,7 @@ export default function ExportControls({ transcript, uploadedFileName }: ExportC
     a.click();
     document.body.removeChild(a);
     URL.revokeObjectURL(url);
-  };
+  }, [projectTranscript, settings, uploadedFileName]);
 
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
@@ -53,14 +53,17 @@ export default function ExportControls({ transcript, uploadedFileName }: ExportC
         event.preventDefault();
         handleExportJson();
       }
+      if ((event.metaKey || event.ctrlKey) && event.key === "e") {
+        event.preventDefault();
+        handleExportSrt();
+      }
     };
 
     window.addEventListener("keydown", handleKeyDown);
     return () => {
       window.removeEventListener("keydown", handleKeyDown);
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [handleExportJson, handleExportSrt]);
 
   return (
     <div className="w-full max-w-4xl">
