@@ -6,11 +6,14 @@ import { useSettings } from "@contexts/SettingsContext";
 import { useCallback, useEffect } from "react";
 
 interface ExportControlsProps {
-  transcript: ProjectTranscript;
+  projectTranscript: ProjectTranscript;
   uploadedFileName: string | null;
 }
 
-export default function ExportControls({ transcript, uploadedFileName }: ExportControlsProps) {
+export default function ExportControls({
+  projectTranscript,
+  uploadedFileName,
+}: ExportControlsProps) {
   const { settings } = useSettings();
 
   const handleExportJson = useCallback(() => {

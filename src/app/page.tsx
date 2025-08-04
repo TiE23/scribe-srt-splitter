@@ -7,21 +7,27 @@ import ExportControls from "@components/ExportControls";
 import { ProjectTranscript } from "@types";
 
 export default function Home() {
-  const [transcript, setTranscript] = useState<ProjectTranscript | null>(null);
+  const [projectTranscript, setProjectTranscript] = useState<ProjectTranscript | null>(null);
   const [uploadedFileName, setUploadedFileName] = useState<string | null>(null);
 
   const handleFileLoaded = (data: ProjectTranscript, fileName: string | null) => {
-    setTranscript(data);
+    setProjectTranscript(data);
     setUploadedFileName(fileName);
   };
 
   return (
     <main className="flex min-h-screen flex-col items-center">
-      {!transcript ? (
+      {!projectTranscript ? (
         <FileUploader onFileLoaded={handleFileLoaded} />
       ) : (
-        <TranscriptEditor transcript={transcript} setTranscript={setTranscript}>
-          <ExportControls transcript={transcript} uploadedFileName={uploadedFileName} />
+        <TranscriptEditor
+          projectTranscript={projectTranscript}
+          setProjectTranscript={setProjectTranscript}
+        >
+          <ExportControls
+            projectTranscript={projectTranscript}
+            uploadedFileName={uploadedFileName}
+          />
         </TranscriptEditor>
       )}
     </main>

@@ -11,13 +11,13 @@ import SettingsModal from "./SettingsModal";
 import clsx from "clsx";
 
 interface TranscriptEditorProps {
-  transcript: ProjectTranscript;
-  setTranscript: React.Dispatch<React.SetStateAction<ProjectTranscript | null>>;
+  projectTranscript: ProjectTranscript;
+  setProjectTranscript: React.Dispatch<React.SetStateAction<ProjectTranscript | null>>;
 }
 
 export default function TranscriptEditor({
-  transcript,
-  setTranscript,
+  projectTranscript,
+  setProjectTranscript,
   children,
 }: React.PropsWithChildren<TranscriptEditorProps>) {
   const { settings } = useSettings();
@@ -26,7 +26,7 @@ export default function TranscriptEditor({
   // Handle word click - rotate through states: none → newLine → newCard → none
   const handleWordClick = useCallback(
     (index: number) => {
-      setTranscript((prev) => {
+      setProjectTranscript((prev) => {
         if (!prev) return null;
 
         const newWords = [...prev.words];
@@ -54,13 +54,13 @@ export default function TranscriptEditor({
         return { ...prev, words: newWords };
       });
     },
-    [setTranscript],
+    [setProjectTranscript],
   );
 
   // New handler for word editing
   const handleWordEdit = useCallback(
     (index: number, newText: string) => {
-      setTranscript((prev) => {
+      setProjectTranscript((prev) => {
         if (!prev) return null;
 
         const newWords = [...prev.words];
@@ -74,11 +74,14 @@ export default function TranscriptEditor({
         return { ...prev, words: newWords };
       });
     },
-    [setTranscript],
+    [setProjectTranscript],
   );
 
   // Enhanced preview section in TranscriptEditor.tsx
-  const { subtitles } = useMemo(() => generateSrt(transcript, settings), [transcript, settings]);
+  const { subtitles } = useMemo(
+    () => generateSrt(projectTranscript, settings),
+    [projectTranscript, settings],
+  );
 
   return (
     <div className="flex w-full flex-col gap-y-4 px-4 pt-4">
@@ -117,7 +120,7 @@ export default function TranscriptEditor({
         <div className="col-span-5 h-full rounded-lg bg-white p-4 shadow-md">
           <h2 className="mb-4 text-xl font-bold select-none">Transcript</h2>
           <div className="h-[90cqh] overflow-y-scroll py-2 leading-relaxed">
-            {transcript.words
+            {projectTranscript.words
               .map((word, originalIndex) => {
                 if (word.type === "word") {
                   return (

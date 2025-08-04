@@ -31,10 +31,10 @@ const getWordText = (word: ProjectWord): string => {
 
 // Generate SRT content
 export const generateSrt = (
-  transcript: ProjectTranscript,
+  projectTranscript: ProjectTranscript,
   settings: Settings,
 ): { srtContent: string; subtitles: SRTSubtitle[] } => {
-  const words = transcript.words.filter((word) => word.type === "word");
+  const words = projectTranscript.words.filter((word) => word.type === "word");
   const subtitles: SRTSubtitle[] = [];
 
   let currentSubtitle: SRTSubtitle | null = null;
