@@ -67,9 +67,7 @@ export default function FileUploader({ onFileLoaded }: FileUploaderProps) {
     <div className="mt-4 flex max-w-[50ch] flex-col items-center gap-y-4">
       <div className="flex flex-col gap-y-2">
         <h2 className="text-xl font-bold">Scribe Transcript to Custom Timed SRT Tool</h2>
-        <p className="text-sm text-gray-600">
-          Supports Scribe v1, v2, and formatted transcript files
-        </p>
+        <p className="text-center text-sm text-gray-600/20 italic">Version: 2025-08-04A</p>
       </div>
 
       <div
