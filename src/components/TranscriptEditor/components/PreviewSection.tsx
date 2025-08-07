@@ -1,7 +1,6 @@
 "use client";
 
 import { useSettings } from "@contexts/AppContext";
-import { ProjectTranscript } from "@types";
 import { generateSrt } from "@utils/export";
 import clsx from "clsx";
 import { useMemo } from "react";

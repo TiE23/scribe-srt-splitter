@@ -2,7 +2,7 @@
 
 import React, { createContext, useContext, useState, useEffect } from "react";
 import { localStorageUtils } from "@utils/browser";
-import { HoverState, AppSettings, ProjectTranscript, HoverStateMode } from "@types";
+import { HoverState, AppSettings, ProjectTranscript } from "@types";
 
 const defaultAppSettings: AppSettings = {
   sentenceCardBreakDash: false,

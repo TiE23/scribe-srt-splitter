@@ -1,6 +1,5 @@
 "use client";
 
-import { ProjectTranscript } from "@types";
 import { generateSrt } from "@utils/export";
 import { useSettings } from "@contexts/AppContext";
 import { useCallback, useEffect } from "react";

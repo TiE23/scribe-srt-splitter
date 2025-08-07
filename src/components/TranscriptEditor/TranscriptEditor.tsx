@@ -7,7 +7,7 @@ import SettingsModal from "../SettingsModal";
 import EditorSection from "./components/EditorSection";
 import PreviewSection from "./components/PreviewSection";
 
-export default function TranscriptEditor({ children }: React.PropsWithChildren<{}>) {
+export default function TranscriptEditor({ children }: React.PropsWithChildren) {
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
 
   return (
