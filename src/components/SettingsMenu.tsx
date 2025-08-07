@@ -1,4 +1,4 @@
-import { useSettings } from "@contexts/SettingsContext";
+import { useSettings } from "@contexts/AppContext";
 
 export default function SettingsMenu() {
   const { settings, updateSetting, resetSettings } = useSettings();
@@ -99,6 +99,18 @@ export default function SettingsMenu() {
           <p className="ml-2 font-light">Center the text in subtitle preview cards.</p>
         </label>
       </div>
+
+      <div className="mb-2 border-t border-gray-200 pt-2" />
+
+      <label className="flex cursor-pointer items-center gap-x-2">
+        <input
+          type="checkbox"
+          checked={settings.hoverFeature}
+          onChange={(e) => updateSetting("hoverFeature", e.target.checked)}
+          className="rounded"
+        />
+        <p className="ml-2 font-light">Enable hover feature for subtitle preview cards.</p>
+      </label>
 
       <button
         onClick={resetSettings}

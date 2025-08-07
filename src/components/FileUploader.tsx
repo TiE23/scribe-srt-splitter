@@ -4,14 +4,21 @@ import { useState, useCallback } from "react";
 import { ProjectTranscript } from "@types";
 import { parseTranscript } from "@/utils/transcriptParser";
 import clsx from "clsx";
+import { useSettings } from "@contexts/AppContext";
 
-interface FileUploaderProps {
-  onFileLoaded: (data: ProjectTranscript, fileName: string | null) => void;
-}
+export default function FileUploader() {
+  const { setProjectTranscript, setUploadedFileName } = useSettings();
 
-export default function FileUploader({ onFileLoaded }: FileUploaderProps) {
   const [isDragging, setIsDragging] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  const handleFileLoaded = useCallback(
+    (data: ProjectTranscript, fileName: string | null) => {
+      setUploadedFileName(fileName);
+      setProjectTranscript(data);
+    },
+    [setUploadedFileName, setProjectTranscript],
+  );
 
   const processFile = useCallback(
     (file: File) => {
@@ -33,7 +40,7 @@ export default function FileUploader({ onFileLoaded }: FileUploaderProps) {
             return;
           }
 
-          onFileLoaded(parseResult.data, fileNameWithoutExt);
+          handleFileLoaded(parseResult.data, fileNameWithoutExt);
           setError(null);
         } catch (err) {
           setError("Unexpected error occurred while processing the file.");
@@ -43,7 +50,7 @@ export default function FileUploader({ onFileLoaded }: FileUploaderProps) {
 
       reader.readAsText(file);
     },
-    [onFileLoaded],
+    [handleFileLoaded],
   );
 
   const handleDrop = useCallback(
@@ -67,7 +74,7 @@ export default function FileUploader({ onFileLoaded }: FileUploaderProps) {
     <div className="mt-4 flex max-w-[50ch] flex-col items-center gap-y-4">
       <div className="flex flex-col gap-y-2">
         <h2 className="text-xl font-bold">Scribe Transcript to Custom Timed SRT Tool</h2>
-        <p className="text-center text-sm text-gray-600/20 italic">Version: 2025-08-04A</p>
+        <p className="text-center text-sm text-gray-600/20 italic">Version: 2025-08-07A</p>
       </div>
 
       <div
