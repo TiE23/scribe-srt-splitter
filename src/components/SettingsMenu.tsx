@@ -1,4 +1,4 @@
-import { useSettings } from "@contexts/SettingsContext";
+import { useSettings } from "@contexts/AppContext";
 
 export default function SettingsMenu() {
   const { settings, updateSetting, resetSettings } = useSettings();

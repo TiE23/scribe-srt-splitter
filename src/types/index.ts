@@ -98,10 +98,26 @@ export const ProjectTranscriptSchema = z
   .strict();
 export type ProjectTranscript = z.infer<typeof ProjectTranscriptSchema>;
 
+/////////////////////////////////////////////////////////
 // SRT format
+/////////////////////////////////////////////////////////
 export interface SRTSubtitle {
   index: number;
   startTime: string; // Format: 00:00:00,000
   endTime: string;
   text: string;
+}
+
+/////////////////////////////////////////////////////////
+// App Types
+/////////////////////////////////////////////////////////
+export interface AppSettings {
+  sentenceCardBreakDash: boolean;
+  matchingEmDash: boolean;
+  aggressiveEmDash: boolean;
+  autoEllipsesPairs: boolean;
+  autoCommaToEllipses: boolean;
+  rule: number;
+  centerText: boolean;
+  // Add more settings here as needed
 }

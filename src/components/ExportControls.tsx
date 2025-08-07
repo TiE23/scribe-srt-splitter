@@ -2,19 +2,11 @@
 
 import { ProjectTranscript } from "@types";
 import { generateSrt } from "@utils/export";
-import { useSettings } from "@contexts/SettingsContext";
+import { useSettings } from "@contexts/AppContext";
 import { useCallback, useEffect } from "react";
 
-interface ExportControlsProps {
-  projectTranscript: ProjectTranscript;
-  uploadedFileName: string | null;
-}
-
-export default function ExportControls({
-  projectTranscript,
-  uploadedFileName,
-}: ExportControlsProps) {
-  const { settings } = useSettings();
+export default function ExportControls() {
+  const { projectTranscript, uploadedFileName, settings } = useSettings();
 
   const handleExportJson = useCallback(() => {
     const jsonContent = JSON.stringify(projectTranscript, null, 2);
@@ -35,6 +27,7 @@ export default function ExportControls({
   }, [projectTranscript, uploadedFileName]);
 
   const handleExportSrt = useCallback(() => {
+    if (!projectTranscript) return;
     const { srtContent } = generateSrt(projectTranscript, settings);
     const blob = new Blob([srtContent], { type: "text/plain" });
     const url = URL.createObjectURL(blob);

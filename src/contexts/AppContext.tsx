@@ -2,21 +2,10 @@
 
 import React, { createContext, useContext, useState, useEffect } from "react";
 import { localStorageUtils } from "@utils/browser";
-
-// Define the settings interface
-export interface Settings {
-  sentenceCardBreakDash: boolean;
-  matchingEmDash: boolean;
-  aggressiveEmDash: boolean;
-  autoEllipsesPairs: boolean;
-  autoCommaToEllipses: boolean;
-  rule: number;
-  centerText: boolean;
-  // Add more settings here as needed
-}
+import { AppSettings, ProjectTranscript } from "@types";
 
 // Default settings
-const defaultSettings: Settings = {
+const defaultAppSettings: AppSettings = {
   sentenceCardBreakDash: false,
   matchingEmDash: false,
   aggressiveEmDash: false,
@@ -27,21 +16,27 @@ const defaultSettings: Settings = {
 };
 
 // Define the context shape
-interface SettingsContextType {
-  settings: Settings;
-  updateSetting: <K extends keyof Settings>(key: K, value: Settings[K]) => void;
+interface AppContextType {
+  projectTranscript: ProjectTranscript | null;
+  setProjectTranscript: React.Dispatch<React.SetStateAction<ProjectTranscript | null>>;
+  uploadedFileName: string | null;
+  setUploadedFileName: React.Dispatch<React.SetStateAction<string | null>>;
+  settings: AppSettings;
+  updateSetting: <K extends keyof AppSettings>(key: K, value: AppSettings[K]) => void;
   resetSettings: () => void;
 }
 
 // Create the context
-const SettingsContext = createContext<SettingsContextType | undefined>(undefined);
+const AppContext = createContext<AppContextType | undefined>(undefined);
 
 // Storage key
 const SETTINGS_STORAGE_KEY = "scribe-srt-settings";
 
 // Provider component
 export function SettingsProvider({ children }: { children: React.ReactNode }) {
-  const [settings, setSettings] = useState<Settings>(defaultSettings);
+  const [projectTranscript, setProjectTranscript] = useState<ProjectTranscript | null>(null);
+  const [uploadedFileName, setUploadedFileName] = useState<string | null>(null);
+  const [settings, setSettings] = useState<AppSettings>(defaultAppSettings);
 
   // Load settings from localStorage on initial render
   useEffect(() => {
@@ -51,7 +46,7 @@ export function SettingsProvider({ children }: { children: React.ReactNode }) {
       try {
         const parsedSettings = JSON.parse(storedSettings);
         setSettings((_) => ({
-          ...defaultSettings, // Always include defaults for new settings
+          ...defaultAppSettings, // Always include defaults for new settings
           ...parsedSettings,
         }));
       } catch (error) {
@@ -65,7 +60,7 @@ export function SettingsProvider({ children }: { children: React.ReactNode }) {
         try {
           const parsedSettings = JSON.parse(newValue);
           setSettings((_) => ({
-            ...defaultSettings,
+            ...defaultAppSettings,
             ...parsedSettings,
           }));
         } catch (error) {
@@ -73,7 +68,7 @@ export function SettingsProvider({ children }: { children: React.ReactNode }) {
         }
       } else {
         // If settings were removed, revert to defaults
-        setSettings(defaultSettings);
+        setSettings(defaultAppSettings);
       }
     });
 
@@ -81,7 +76,7 @@ export function SettingsProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   // Update a single setting
-  const updateSetting = <K extends keyof Settings>(key: K, value: Settings[K]) => {
+  const updateSetting = <K extends keyof AppSettings>(key: K, value: AppSettings[K]) => {
     setSettings((current) => {
       const newSettings = { ...current, [key]: value };
       // Save to localStorage
@@ -92,20 +87,30 @@ export function SettingsProvider({ children }: { children: React.ReactNode }) {
 
   // Reset all settings to defaults
   const resetSettings = () => {
-    setSettings(defaultSettings);
-    localStorageUtils.setItem(SETTINGS_STORAGE_KEY, JSON.stringify(defaultSettings));
+    setSettings(defaultAppSettings);
+    localStorageUtils.setItem(SETTINGS_STORAGE_KEY, JSON.stringify(defaultAppSettings));
   };
 
   return (
-    <SettingsContext.Provider value={{ settings, updateSetting, resetSettings }}>
+    <AppContext.Provider
+      value={{
+        projectTranscript,
+        setProjectTranscript,
+        uploadedFileName,
+        setUploadedFileName,
+        settings,
+        updateSetting,
+        resetSettings,
+      }}
+    >
       {children}
-    </SettingsContext.Provider>
+    </AppContext.Provider>
   );
 }
 
 // Custom hook for using the settings
 export function useSettings() {
-  const context = useContext(SettingsContext);
+  const context = useContext(AppContext);
   if (context === undefined) {
     throw new Error("useSettings must be used within a SettingsProvider");
   }
