@@ -1,11 +1,10 @@
 "use client";
 
-import WordElement from "@components/WordElement";
+import WordElement from "@components/TranscriptEditor/components/WordElement";
 import { useSettings } from "@contexts/AppContext";
-import { ProjectTranscript } from "@types";
 import { useCallback } from "react";
 
-export function TranscriptSection() {
+export default function EditorSection() {
   const { projectTranscript, setProjectTranscript } = useSettings();
 
   const handleWordClick = useCallback(
@@ -63,7 +62,7 @@ export function TranscriptSection() {
   return (
     <div className="col-span-5 h-full rounded-lg bg-white p-4 shadow-md">
       <h2 className="mb-4 text-xl font-bold select-none">Transcript</h2>
-      <div className="h-[90cqh] overflow-y-scroll py-2 leading-relaxed">
+      <div className="h-[90cqh] overflow-y-scroll p-2 leading-relaxed">
         {projectTranscript?.words
           .map((word, originalIndex) => {
             if (word.type === "word") {

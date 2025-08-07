@@ -1,6 +1,6 @@
 import { ProjectTranscript, ProjectWord, SRTSubtitle } from "@types";
 import { secondsToSrtTime } from "./time";
-import { AppSettings } from "@contexts/AppContext";
+import { AppSettings } from "@types";
 
 // Detect when there is a pause before a line.
 const PAUSE_DETECTION_THRESHOLD = 0.9;
@@ -99,6 +99,8 @@ export const generateSrt = (
         index: subtitles.length + 1,
         startTime: secondsToSrtTime(adjustedStart),
         endTime: secondsToSrtTime(adjustedEnd),
+        adjustedStart,
+        adjustedEnd,
         text: "",
       };
 
@@ -144,6 +146,7 @@ export const generateSrt = (
       // Update the end time
       if (currentSubtitle) {
         currentSubtitle.endTime = secondsToSrtTime(adjustedEnd);
+        currentSubtitle.adjustedEnd = adjustedEnd;
       }
     }
 

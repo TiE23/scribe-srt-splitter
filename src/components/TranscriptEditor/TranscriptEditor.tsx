@@ -1,17 +1,13 @@
 "use client";
 
 import { useState } from "react";
-import { ProjectTranscript } from "@types";
 import { getWordClasses } from "@utils/styles";
 import SettingsButton from "../SettingsButton";
 import SettingsModal from "../SettingsModal";
-import { TranscriptSection } from "./components/TranscriptSection";
-import { PreviewSection } from "./components/PreviewSection";
-import { useSettings } from "@contexts/AppContext";
+import EditorSection from "./components/EditorSection";
+import PreviewSection from "./components/PreviewSection";
 
 export default function TranscriptEditor({ children }: React.PropsWithChildren<{}>) {
-  const { projectTranscript, setProjectTranscript } = useSettings();
-
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
 
   return (
@@ -47,7 +43,7 @@ export default function TranscriptEditor({ children }: React.PropsWithChildren<{
       {isSettingsOpen && <SettingsModal onClickClose={() => setIsSettingsOpen(false)} />}
 
       <div className="@container mb-4 grid grid-cols-8 gap-2">
-        <TranscriptSection />
+        <EditorSection />
         <PreviewSection />
       </div>
     </div>

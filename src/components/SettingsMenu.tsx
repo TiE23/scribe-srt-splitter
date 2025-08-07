@@ -100,6 +100,18 @@ export default function SettingsMenu() {
         </label>
       </div>
 
+      <div className="mb-2 border-t border-gray-200 pt-2" />
+
+      <label className="flex cursor-pointer items-center gap-x-2">
+        <input
+          type="checkbox"
+          checked={settings.hoverFeature}
+          onChange={(e) => updateSetting("hoverFeature", e.target.checked)}
+          className="rounded"
+        />
+        <p className="ml-2 font-light">Enable hover feature for subtitle preview cards.</p>
+      </label>
+
       <button
         onClick={resetSettings}
         className="cursor-pointer rounded bg-gray-200 px-4 py-2 text-gray-800 hover:bg-gray-300"

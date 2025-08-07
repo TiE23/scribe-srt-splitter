@@ -105,6 +105,8 @@ export interface SRTSubtitle {
   index: number;
   startTime: string; // Format: 00:00:00,000
   endTime: string;
+  adjustedStart: number;
+  adjustedEnd: number;
   text: string;
 }
 
@@ -119,5 +121,14 @@ export interface AppSettings {
   autoCommaToEllipses: boolean;
   rule: number;
   centerText: boolean;
+  hoverFeature: boolean;
   // Add more settings here as needed
+}
+
+export type HoverStateMode = "editor" | "preview";
+
+export interface HoverState {
+  mode: HoverStateMode;
+  start: number;
+  end: number;
 }

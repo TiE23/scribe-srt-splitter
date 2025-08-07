@@ -2,9 +2,8 @@
 
 import React, { createContext, useContext, useState, useEffect } from "react";
 import { localStorageUtils } from "@utils/browser";
-import { AppSettings, ProjectTranscript } from "@types";
+import { HoverState, AppSettings, ProjectTranscript, HoverStateMode } from "@types";
 
-// Default settings
 const defaultAppSettings: AppSettings = {
   sentenceCardBreakDash: false,
   matchingEmDash: false,
@@ -12,33 +11,48 @@ const defaultAppSettings: AppSettings = {
   autoEllipsesPairs: false,
   autoCommaToEllipses: false,
   centerText: false,
+  hoverFeature: false,
   rule: 0,
 };
 
-// Define the context shape
 interface AppContextType {
   projectTranscript: ProjectTranscript | null;
   setProjectTranscript: React.Dispatch<React.SetStateAction<ProjectTranscript | null>>;
   uploadedFileName: string | null;
   setUploadedFileName: React.Dispatch<React.SetStateAction<string | null>>;
+  setHoverState: React.Dispatch<React.SetStateAction<HoverState | null>>;
+  amIHoveredEditor: (start: number, end: number) => boolean;
+  amIHoveredPreview: (start: number, end: number) => boolean;
   settings: AppSettings;
   updateSetting: <K extends keyof AppSettings>(key: K, value: AppSettings[K]) => void;
   resetSettings: () => void;
 }
 
-// Create the context
 const AppContext = createContext<AppContextType | undefined>(undefined);
 
 // Storage key
 const SETTINGS_STORAGE_KEY = "scribe-srt-settings";
 
-// Provider component
 export function SettingsProvider({ children }: { children: React.ReactNode }) {
   const [projectTranscript, setProjectTranscript] = useState<ProjectTranscript | null>(null);
   const [uploadedFileName, setUploadedFileName] = useState<string | null>(null);
+  const [hoverState, setHoverState] = useState<HoverState | null>(null);
   const [settings, setSettings] = useState<AppSettings>(defaultAppSettings);
 
-  // Load settings from localStorage on initial render
+  const amIHoveredEditor = (start: number, end: number) => {
+    if (!settings.hoverFeature) return false;
+    if (!hoverState) return false;
+    if (hoverState.mode === "editor") return false;
+    return start >= hoverState.start && end <= hoverState.end;
+  };
+
+  const amIHoveredPreview = (start: number, end: number) => {
+    if (!settings.hoverFeature) return false;
+    if (!hoverState) return false;
+    if (hoverState.mode === "preview") return false;
+    return hoverState.start >= start && hoverState.end <= end;
+  };
+
   useEffect(() => {
     const storedSettings = localStorageUtils.getItem(SETTINGS_STORAGE_KEY);
 
@@ -46,7 +60,7 @@ export function SettingsProvider({ children }: { children: React.ReactNode }) {
       try {
         const parsedSettings = JSON.parse(storedSettings);
         setSettings((_) => ({
-          ...defaultAppSettings, // Always include defaults for new settings
+          ...defaultAppSettings,
           ...parsedSettings,
         }));
       } catch (error) {
@@ -75,7 +89,7 @@ export function SettingsProvider({ children }: { children: React.ReactNode }) {
     return unsubscribe;
   }, []);
 
-  // Update a single setting
+  // Update a single setting.
   const updateSetting = <K extends keyof AppSettings>(key: K, value: AppSettings[K]) => {
     setSettings((current) => {
       const newSettings = { ...current, [key]: value };
@@ -85,7 +99,7 @@ export function SettingsProvider({ children }: { children: React.ReactNode }) {
     });
   };
 
-  // Reset all settings to defaults
+  // Reset all settings to defaults.
   const resetSettings = () => {
     setSettings(defaultAppSettings);
     localStorageUtils.setItem(SETTINGS_STORAGE_KEY, JSON.stringify(defaultAppSettings));
@@ -98,6 +112,9 @@ export function SettingsProvider({ children }: { children: React.ReactNode }) {
         setProjectTranscript,
         uploadedFileName,
         setUploadedFileName,
+        setHoverState: setHoverState,
+        amIHoveredEditor,
+        amIHoveredPreview,
         settings,
         updateSetting,
         resetSettings,
@@ -108,7 +125,6 @@ export function SettingsProvider({ children }: { children: React.ReactNode }) {
   );
 }
 
-// Custom hook for using the settings
 export function useSettings() {
   const context = useContext(AppContext);
   if (context === undefined) {

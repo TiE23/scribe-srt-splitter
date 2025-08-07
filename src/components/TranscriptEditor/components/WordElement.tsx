@@ -1,5 +1,6 @@
 "use client";
 
+import { useSettings } from "@contexts/AppContext";
 import { ProjectWord } from "@types";
 import { getWordClasses } from "@utils/styles";
 import clsx from "clsx";
@@ -13,6 +14,8 @@ interface WordElementProps {
 }
 
 export default function WordElement({ word, onClick, onEdit }: WordElementProps) {
+  const { setHoverState, amIHoveredEditor } = useSettings();
+
   const [isEditing, setIsEditing] = useState(false);
   const [editText, setEditText] = useState(word.revisedText || word.text);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -66,11 +69,14 @@ export default function WordElement({ word, onClick, onEdit }: WordElementProps)
         <span
           className={clsx(
             "select-none",
+            amIHoveredEditor(word.start, word.end) && "bg-amber-100",
             getWordClasses(word.newCardAfter, word.newLineAfter),
             word.revisedText && "font-bold text-blue-700",
           )}
           onClick={onClick}
           onContextMenu={handleRightClick}
+          onMouseEnter={() => setHoverState({ mode: "editor", start: word.start, end: word.end })}
+          onMouseLeave={() => setHoverState(null)}
         >
           {word.revisedText || word.text}
           {word.newCardAfter && <span className="ml-1 text-purple-800">⏎⏎</span>}
