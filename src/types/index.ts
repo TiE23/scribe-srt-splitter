@@ -52,7 +52,7 @@ const ScribeV2SegmentSchema = z
     text: z.string(),
     start_time: z.number(),
     end_time: z.number(),
-    speaker: ScribeV2SpeakerSchema,
+    speaker: ScribeV2SpeakerSchema.optional(),
     words: z.array(ScribeV2WordSchema),
   })
   .strict();

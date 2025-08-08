@@ -74,7 +74,7 @@ export default function FileUploader() {
     <div className="mt-4 flex max-w-[50ch] flex-col items-center gap-y-4">
       <div className="flex flex-col gap-y-2">
         <h2 className="text-xl font-bold">Scribe Transcript to Custom Timed SRT Tool</h2>
-        <p className="text-center text-sm text-gray-600/20 italic">Version: 2025-08-07A</p>
+        <p className="text-center text-sm text-gray-600/20 italic">Version: 2025-08-08A</p>
       </div>
 
       <div
